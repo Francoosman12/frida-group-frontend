@@ -16,7 +16,7 @@ const SalesPage = () => {
 
     if (eanCode.length >= 8) {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/products/search?ean=${eanCode}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/products/search?ean=${eanCode}`);
         if (response.data) {
           setProduct(response.data);
           setError('');
@@ -36,7 +36,7 @@ const SalesPage = () => {
   const handleRegisterSale = async () => {
     if (product) {
       try {
-        await axios.post(`${process.env.REACT_APP_API_URL}/sales`, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/sales`, {
           ean: product.ean,
           quantity: quantity,
         });

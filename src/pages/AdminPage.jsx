@@ -13,7 +13,7 @@ const AdminPage = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/products`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/products`);
       setProducts(response.data);
     } catch (err) {
       console.error('Error fetching products:', err);
@@ -29,7 +29,7 @@ const AdminPage = () => {
     e.preventDefault();
     try {
       if (editProductId) {
-        await axios.put(`${process.env.REACT_APP_API_URL}/products/${editProductId}`, {
+        await axios.put(`${import.meta.env.VITE_API_URL}/products/${editProductId}`, {
           ean,
           description,
           price: parseFloat(price),
@@ -37,7 +37,7 @@ const AdminPage = () => {
         });
         setEditProductId(null);
       } else {
-        await axios.post(`${process.env.REACT_APP_API_URL}/products`, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/products`, {
           ean,
           description,
           price: parseFloat(price),
@@ -67,7 +67,7 @@ const AdminPage = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_API_URL}/products/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/products/${id}`);
       fetchProducts();
     } catch (err) {
       console.error('Error deleting product:', err);
@@ -129,7 +129,7 @@ const AdminPage = () => {
       </form>
       {error && <p className="error-message">{error}</p>}
 
-      <h2 className="table-title">All Products</h2>
+      <h2 className="table-title">Todos los Productos</h2>
       <table className="products-table">
         <thead>
           <tr>
