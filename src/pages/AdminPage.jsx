@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../styles/AdminPage.css'; // Importa el archivo CSS
+import '../styles/AdminPage.css';
 
 const AdminPage = () => {
   const [products, setProducts] = useState([]);
@@ -11,10 +11,9 @@ const AdminPage = () => {
   const [editProductId, setEditProductId] = useState(null);
   const [error, setError] = useState('');
 
-  // Fetch all products from the backend
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/products');
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/products`);
       setProducts(response.data);
     } catch (err) {
       console.error('Error fetching products:', err);
@@ -22,18 +21,15 @@ const AdminPage = () => {
     }
   };
 
-  // Call fetchProducts when the component mounts
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  // Handle adding or updating a product
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (editProductId) {
-        // Update existing product
-        await axios.put(`http://localhost:5000/products/${editProductId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/products/${editProductId}`, {
           ean,
           description,
           price: parseFloat(price),
@@ -41,8 +37,7 @@ const AdminPage = () => {
         });
         setEditProductId(null);
       } else {
-        // Add new product
-        await axios.post('http://localhost:5000/products', {
+        await axios.post(`${process.env.REACT_APP_API_URL}/products`, {
           ean,
           description,
           price: parseFloat(price),
@@ -50,7 +45,6 @@ const AdminPage = () => {
         });
       }
 
-      // Clear the form and refresh products
       setEan('');
       setDescription('');
       setPrice('');
@@ -63,7 +57,6 @@ const AdminPage = () => {
     }
   };
 
-  // Handle editing a product
   const handleEdit = (product) => {
     setEan(product.ean);
     setDescription(product.description);
@@ -72,10 +65,9 @@ const AdminPage = () => {
     setEditProductId(product._id);
   };
 
-  // Handle deleting a product
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/products/${id}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/products/${id}`);
       fetchProducts();
     } catch (err) {
       console.error('Error deleting product:', err);
@@ -145,7 +137,7 @@ const AdminPage = () => {
             <th>Descripción</th>
             <th>Precio</th>
             <th>Stock</th>
-            <th>Actions</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -156,8 +148,8 @@ const AdminPage = () => {
               <td>${product.price.toFixed(2)}</td>
               <td>{product.stock}</td>
               <td>
-                <button onClick={() => handleEdit(product)} className="action-button">Editar</button>
-                <button onClick={() => handleDelete(product._id)} className="action-button">Eliminar</button>
+                <button onClick={() => handleEdit(product)} className="edit-button">Editar</button>
+                <button onClick={() => handleDelete(product._id)} className="delete-button">Eliminar</button>
               </td>
             </tr>
           ))}

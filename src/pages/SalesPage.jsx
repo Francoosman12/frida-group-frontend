@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useSales } from '../context/SalesContext';
-import '../styles/SalesPage.css'; // Asegúrate de importar el archivo CSS
+import '../styles/SalesPage.css';
 
 const SalesPage = () => {
   const { addSale, sales } = useSales();
   const [ean, setEan] = useState('');
-  const [quantity, setQuantity] = useState(1); // Cantidad inicial
+  const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState(null);
   const [error, setError] = useState('');
 
@@ -16,7 +16,7 @@ const SalesPage = () => {
 
     if (eanCode.length >= 8) {
       try {
-        const response = await axios.get(`http://localhost:5000/products/search?ean=${eanCode}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/products/search?ean=${eanCode}`);
         if (response.data) {
           setProduct(response.data);
           setError('');
@@ -36,19 +36,19 @@ const SalesPage = () => {
   const handleRegisterSale = async () => {
     if (product) {
       try {
-        await axios.post('http://localhost:5000/sales', {
+        await axios.post(`${process.env.REACT_APP_API_URL}/sales`, {
           ean: product.ean,
-          quantity: quantity, // Enviar la cantidad deseada
+          quantity: quantity,
         });
 
         addSale({
           ...product,
           quantity: quantity,
-          date: new Date().toISOString(), // Incluye la fecha de la venta
+          date: new Date().toISOString(),
         });
         setProduct(null);
         setEan('');
-        setQuantity(1); // Resetear la cantidad después de registrar la venta
+        setQuantity(1);
       } catch (err) {
         console.error('Error registering sale:', err);
         setError('Error registering sale');
@@ -56,7 +56,6 @@ const SalesPage = () => {
     }
   };
 
-  // Calcular el total de las ventas
   const totalAmount = sales.reduce((acc, sale) => acc + (sale.price * sale.quantity), 0);
 
   return (
