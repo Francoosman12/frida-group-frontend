@@ -4,17 +4,18 @@ import { useSales } from '../context/SalesContext';
 import '../styles/SalesPage.css';
 
 const SalesPage = () => {
-  const { addSale, sales } = useSales();
+  const { sales, addSale } = useSales();
   const [ean, setEan] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState(null);
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [salesPerPage] = useState(20); // Number of rows per page
+  const [salesPerPage] = useState(20);
   const [filteredSales, setFilteredSales] = useState([]);
   const [outOfStockError, setOutOfStockError] = useState('');
 
   useEffect(() => {
+    console.log('Sales from context:', sales);
     setFilteredSales(sales);
   }, [sales]);
 
@@ -55,11 +56,14 @@ const SalesPage = () => {
           quantity: quantity,
         });
 
+        console.log('Sale registered:', response.data);
         if (response.data) {
+          // Usar addSale en lugar de setSales
           addSale({
             ...product,
             quantity: quantity,
             date: new Date().toISOString(),
+            saleNumber: response.data.saleNumber, // Incluye el número de venta
           });
           setProduct(null);
           setEan('');
@@ -90,7 +94,7 @@ const SalesPage = () => {
     });
 
     setFilteredSales(filtered);
-    setCurrentPage(1); // Reset to first page
+    setCurrentPage(1);
   };
 
   const totalAmount = filteredSales.reduce((acc, sale) => acc + (sale.price * sale.quantity), 0);
@@ -98,6 +102,8 @@ const SalesPage = () => {
   const indexOfLastSale = currentPage * salesPerPage;
   const indexOfFirstSale = indexOfLastSale - salesPerPage;
   const currentSales = filteredSales.slice(indexOfFirstSale, indexOfLastSale);
+
+  console.log('Current Sales:', currentSales);
 
   return (
     <div className="sales-page">
@@ -179,13 +185,13 @@ const SalesPage = () => {
           </tbody>
         </table>
         <div className="pagination">
-          {Array.from({ length: Math.ceil(filteredSales.length / salesPerPage) }, (_, index) => (
+          {Array.from({ length: Math.ceil(filteredSales.length / salesPerPage) }, (_, i) => (
             <button
-              key={index}
-              onClick={() => handlePageChange(index + 1)}
-              className={`page-button ${currentPage === index + 1 ? 'active' : ''}`}
+              key={i}
+              onClick={() => handlePageChange(i + 1)}
+              className={`pagination-button ${currentPage === i + 1 ? 'active' : ''}`}
             >
-              {index + 1}
+              {i + 1}
             </button>
           ))}
         </div>
