@@ -1,7 +1,6 @@
 .sales-page {
     font-family: Arial, sans-serif;
-    margin: 20px;
-    padding: 20px;
+    margin: 10px;
   }
   
   .page-title {
@@ -69,5 +68,64 @@
   
   .sales-table th {
     background-color: #f4f4f4;
+  }
+  
+  /* Pagination styles */
+  .pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .page-button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+    cursor: pointer;
+  }
+  
+  .page-button.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+  }
+  
+  .page-button:hover {
+    background-color: #e2e6ea;
+  }
+  
+  .date-filter {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .date-filter label {
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+    width: 45%;
+  }
+  
+  .date-filter input[type="date"] {
+    padding: 5px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .date-filter button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .date-filter button:hover {
+    background-color: #0056b3;
   }
   

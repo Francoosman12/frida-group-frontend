@@ -2,8 +2,7 @@
 
 /* Estilos generales para el contenedor principal */
 #root {
-  max-width: 1280px;
-  margin: 0;
+  margin:0;
   text-align: center;
 }
 
