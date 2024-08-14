@@ -108,4 +108,13 @@
   .action-button:last-of-type:hover {
     background-color: #c82333;
   }
-  
+  .edit-button{
+    background-color: #218838;
+    color: white;
+    margin: 5px;
+  }
+  .delete-button{
+    background-color: red;
+    color: white;
+    margin: 5px;
+  }

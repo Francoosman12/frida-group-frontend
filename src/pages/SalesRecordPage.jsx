@@ -1,4 +1,3 @@
-// src/pages/SalesRecordPage.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/SalesRecordPage.css'; // Asegúrate de importar el CSS
@@ -42,10 +41,10 @@ const SalesRecordPage = () => {
               <tr key={index}>
                 <td>{new Date(sale.date).toLocaleDateString()}</td>
                 <td>{sale.ean}</td>
-                <td>{sale.description}</td>
-                <td>{sale.quantity}</td>
-                <td>${sale.price.toFixed(2)}</td>
-                <td>${(sale.price * sale.quantity).toFixed(2)}</td>
+                <td>{sale.description || 'N/A'}</td>
+                <td>{sale.quantity || 0}</td>
+                <td>${(sale.price ? sale.price.toFixed(2) : '0.00')}</td>
+                <td>${(sale.price && sale.quantity ? (sale.price * sale.quantity).toFixed(2) : '0.00')}</td>
               </tr>
             ))
           ) : (

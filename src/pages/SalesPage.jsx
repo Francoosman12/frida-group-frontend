@@ -49,21 +49,22 @@ const SalesPage = () => {
         setOutOfStockError('Product out of stock');
         return;
       }
-
+  
       try {
+        // Asegúrate de incluir el precio en la solicitud
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/sales`, {
           ean: product.ean,
           quantity: quantity,
+          price: product.price, // Incluye el precio del producto
         });
-
+  
         console.log('Sale registered:', response.data);
         if (response.data) {
-          // Usar addSale en lugar de setSales
           addSale({
             ...product,
             quantity: quantity,
             date: new Date().toISOString(),
-            saleNumber: response.data.saleNumber, // Incluye el número de venta
+            saleNumber: response.data._id, // Incluye el ID de la venta
           });
           setProduct(null);
           setEan('');
@@ -71,11 +72,13 @@ const SalesPage = () => {
           setOutOfStockError('');
         }
       } catch (err) {
-        console.error('Error registering sale:', err);
+        console.error('Error registering sale:', err.response?.data || err.message);
         setError('Error registering sale');
       }
     }
   };
+  
+  
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
