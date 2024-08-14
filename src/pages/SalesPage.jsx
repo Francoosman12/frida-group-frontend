@@ -9,39 +9,38 @@ const SalesPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState(null);
   const [error, setError] = useState('');
+  const [outOfStockError, setOutOfStockError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [salesPerPage] = useState(20);
   const [filteredSales, setFilteredSales] = useState([]);
-  const [outOfStockError, setOutOfStockError] = useState('');
+  const [debouncedEan, setDebouncedEan] = useState(ean);
 
   useEffect(() => {
-    console.log('Sales from context:', sales);
-    setFilteredSales(sales);
-  }, [sales]);
+    const timer = setTimeout(() => {
+      setDebouncedEan(ean);
+    }, 300);
 
-  const handleChange = async (e) => {
-    const eanCode = e.target.value;
-    setEan(eanCode);
+    return () => clearTimeout(timer);
+  }, [ean]);
 
-    if (eanCode.length >= 8) {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/products/search?ean=${eanCode}`);
-        if (response.data) {
-          setProduct(response.data);
-          setError('');
+  useEffect(() => {
+    if (debouncedEan.length >= 8) {
+      const fetchProduct = async () => {
+        try {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/products/search?ean=${debouncedEan}`);
+          setProduct(response.data || null);
+          setError(response.data ? '' : 'Product not found');
           setOutOfStockError('');
-        } else {
-          setProduct(null);
-          setError('Product not found');
+        } catch (err) {
+          setError('Error fetching product');
         }
-      } catch (err) {
-        setError('Error fetching product');
-      }
+      };
+      fetchProduct();
     } else {
       setProduct(null);
       setError('');
     }
-  };
+  }, [debouncedEan]);
 
   const handleRegisterSale = async () => {
     if (product) {
@@ -49,36 +48,31 @@ const SalesPage = () => {
         setOutOfStockError('Product out of stock');
         return;
       }
-  
+
       try {
-        // Asegúrate de incluir el precio en la solicitud
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/sales`, {
           ean: product.ean,
           quantity: quantity,
-          price: product.price, // Incluye el precio del producto
+          price: product.price,
         });
-  
-        console.log('Sale registered:', response.data);
-        if (response.data) {
-          addSale({
-            ...product,
-            quantity: quantity,
-            date: new Date().toISOString(),
-            saleNumber: response.data._id, // Incluye el ID de la venta
-          });
-          setProduct(null);
-          setEan('');
-          setQuantity(1);
-          setOutOfStockError('');
-        }
+
+        addSale({
+          ...product,
+          quantity: quantity,
+          date: new Date().toISOString(),
+          saleNumber: response.data._id,
+        });
+
+        setProduct(null);
+        setEan('');
+        setQuantity(1);
+        setOutOfStockError('');
       } catch (err) {
         console.error('Error registering sale:', err.response?.data || err.message);
         setError('Error registering sale');
       }
     }
   };
-  
-  
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -106,8 +100,6 @@ const SalesPage = () => {
   const indexOfFirstSale = indexOfLastSale - salesPerPage;
   const currentSales = filteredSales.slice(indexOfFirstSale, indexOfLastSale);
 
-  console.log('Current Sales:', currentSales);
-
   return (
     <div className="sales-page">
       <h1 className="page-title">Ventas</h1>
@@ -115,7 +107,7 @@ const SalesPage = () => {
         <input
           type="text"
           value={ean}
-          onChange={handleChange}
+          onChange={(e) => setEan(e.target.value)}
           placeholder="Ingrese el código EAN"
           className="input-field"
         />
