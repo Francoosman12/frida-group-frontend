@@ -48,7 +48,7 @@ const SalesRecordPage = () => {
               <tr key={index}>
                 <td>{new Date(sale.date).toLocaleDateString()}</td>
                 <td>{sale.ean}</td>
-                <td>{sale.product.description || 'N/A'}</td>
+                <td>{sale.product?.description || 'N/A'}</td>
                 <td>{sale.quantity || 0}</td>
                 <td>${(sale.price ? sale.price.toFixed(2) : '0.00')}</td>
                 <td>${(sale.price && sale.quantity ? (sale.price * sale.quantity).toFixed(2) : '0.00')}</td>
