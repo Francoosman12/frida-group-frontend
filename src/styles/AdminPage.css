@@ -48,9 +48,12 @@
   }
 
   /* AdminPage.css */
-.scanner-container {
+.scanner {
     width: 100%;
+    max-width: 400px; /* Limita el tamaño máximo de la cámara */
     height: auto;
+    margin: 0 auto; /* Centra el contenedor */
+    position: relative;
   }
   
   
@@ -197,4 +200,9 @@
     .edit-button, .delete-button {
         width: 80%; /* Botones ocupan el ancho completo */
     }
+    .scanner {
+        width: 100%; /* Asegúrate de que ocupe el 100% del ancho en pantallas pequeñas */
+        max-width: none; /* Desactiva el límite de tamaño máximo */
+        height: 300px; /* Establece una altura específica para dispositivos móviles */
+      }
 }

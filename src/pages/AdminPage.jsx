@@ -133,7 +133,7 @@ const AdminPage = () => {
             {showScanner ? 'Cerrando escáner...' : 'Escanear EAN'}
           </button>
         </div>
-        {showScanner && <div ref={scannerRef} className="scanner-container"></div>}
+        {showScanner && <div ref={scannerRef} className="scanner"></div>}
         <div className="form-group">
           <label>Descripción:</label>
           <input
