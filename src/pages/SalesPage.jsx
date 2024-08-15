@@ -74,6 +74,24 @@ const SalesPage = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchSales = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/sales`, {
+          params: {
+            startDate: '2024-01-01', // Cambiar según tu lógica de fecha
+            endDate: '2024-12-31'    // Cambiar según tu lógica de fecha
+          }
+        });
+        setFilteredSales(response.data);
+      } catch (err) {
+        console.error('Error fetching sales:', err.response?.data || err.message);
+      }
+    };
+
+    fetchSales();
+  }, []);
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
