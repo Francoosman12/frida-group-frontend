@@ -185,7 +185,7 @@ const SalesPage = () => {
               <tr key={index}>
                 <td>{new Date(sale.date).toLocaleDateString()}</td>
                 <td>{sale.ean}</td>
-                <td>{sale.description}</td>
+                <td>{sale.product.description}</td>
                 <td>{sale.quantity}</td>
                 <td>${sale.price.toFixed(2)}</td>
                 <td>${(sale.price * sale.quantity).toFixed(2)}</td>
