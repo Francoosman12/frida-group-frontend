@@ -15,6 +15,9 @@ const AdminPage = () => {
   const [error, setError] = useState('');
   const [showScanner, setShowScanner] = useState(false);
   const webcamRef = useRef(null);
+  const videoConstraints = {
+    facingMode: { exact: 'environment' } // Esto selecciona la cámara trasera
+  };
 
   const fetchProducts = async () => {
     try {
@@ -124,6 +127,7 @@ const AdminPage = () => {
               ref={webcamRef}
               screenshotFormat="image/jpeg"
               width="100%"
+              videoConstraints={videoConstraints} 
             />
             <button type="button" onClick={handleScan} className="scan-button">
               Escanear
