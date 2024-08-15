@@ -1,7 +1,6 @@
-// src/components/AdminPage.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import JsBarcode from 'jsbarcode';
+import { BrowserMultiFormatReader } from '@zxing/library';
 import Webcam from 'react-webcam';
 import '../styles/AdminPage.css';
 
@@ -16,7 +15,7 @@ const AdminPage = () => {
   const [showScanner, setShowScanner] = useState(false);
   const webcamRef = useRef(null);
   const videoConstraints = {
-    facingMode: { exact: 'environment' } // Esto selecciona la cámara trasera
+    facingMode: { exact: 'environment' }
   };
 
   const fetchProducts = async () => {
@@ -32,6 +31,18 @@ const AdminPage = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  const handleScan = async () => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    const codeReader = new BrowserMultiFormatReader();
+    try {
+      const result = await codeReader.decodeFromImage(undefined, imageSrc);
+      setEan(result.text); // Esto establece el EAN escaneado en el formulario
+    } catch (err) {
+      console.error('Error scanning barcode:', err);
+      setError('Error scanning barcode');
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,20 +94,6 @@ const AdminPage = () => {
     }
   };
 
-  const handleScan = () => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    JsBarcode(imageSrc, {
-      // Options for barcode generation
-      format: "EAN13",
-      displayValue: true,
-      width: 2,
-      height: 60,
-    });
-    // Assuming `JsBarcode` is correctly generating the barcode from the image
-    // and you have a function to read the barcode data.
-    // You need to implement the barcode reading from the image.
-  };
-
   return (
     <div className="admin-page">
       <h1 className="page-title">Administración</h1>
@@ -129,6 +126,7 @@ const AdminPage = () => {
               width="100%"
               videoConstraints={videoConstraints} 
             />
+            <div className="scan-line"></div>
             <button type="button" onClick={handleScan} className="scan-button">
               Escanear
             </button>
