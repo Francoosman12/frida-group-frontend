@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { BrowserMultiFormatReader } from '@zxing/library';
-import Webcam from 'react-webcam';
+import Quagga from 'quagga'; // Importa QuaggaJS
 import '../styles/AdminPage.css';
 
 const AdminPage = () => {
@@ -13,10 +12,7 @@ const AdminPage = () => {
   const [editProductId, setEditProductId] = useState(null);
   const [error, setError] = useState('');
   const [showScanner, setShowScanner] = useState(false);
-  const webcamRef = useRef(null);
-  const videoConstraints = {
-    facingMode: { exact: 'environment' }
-  };
+  const scannerRef = useRef(null);
 
   const fetchProducts = async () => {
     try {
@@ -31,18 +27,6 @@ const AdminPage = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
-
-  const handleScan = async () => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    const codeReader = new BrowserMultiFormatReader();
-    try {
-      const result = await codeReader.decodeFromImage(undefined, imageSrc);
-      setEan(result.text); // Esto establece el EAN escaneado en el formulario
-    } catch (err) {
-      console.error('Error scanning barcode:', err);
-      setError('Error scanning barcode');
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -94,6 +78,38 @@ const AdminPage = () => {
     }
   };
 
+  const handleScan = () => {
+    setShowScanner(true);
+    Quagga.init(
+      {
+        inputStream: {
+          type: 'LiveStream',
+          target: scannerRef.current, // Utiliza la referencia al div donde se mostrará el video
+          constraints: {
+            facingMode: 'environment' // Usar la cámara trasera
+          }
+        },
+        decoder: {
+          readers: ['ean_reader'] // Soporta códigos EAN
+        }
+      },
+      (err) => {
+        if (err) {
+          console.error('Error initializing Quagga:', err);
+          setError('Error initializing Quagga');
+          return;
+        }
+        Quagga.start();
+      }
+    );
+
+    Quagga.onDetected((result) => {
+      setEan(result.codeResult.code);
+      Quagga.stop(); // Detener el escaneo después de detectar un código
+      setShowScanner(false); // Ocultar el escáner después de leer el código
+    });
+  };
+
   return (
     <div className="admin-page">
       <h1 className="page-title">Administración</h1>
@@ -111,27 +127,13 @@ const AdminPage = () => {
           />
           <button
             type="button"
-            onClick={() => setShowScanner(!showScanner)}
+            onClick={handleScan}
             className="scan-button"
           >
-            {showScanner ? 'Cerrar Escáner' : 'Escanear EAN'}
+            {showScanner ? 'Cerrando escáner...' : 'Escanear EAN'}
           </button>
         </div>
-        {showScanner && (
-          <div>
-            <Webcam
-              audio={false}
-              ref={webcamRef}
-              screenshotFormat="image/jpeg"
-              width="100%"
-              videoConstraints={videoConstraints} 
-            />
-            <div className="scan-line"></div>
-            <button type="button" onClick={handleScan} className="scan-button">
-              Escanear
-            </button>
-          </div>
-        )}
+        {showScanner && <div ref={scannerRef} className="scanner-container"></div>}
         <div className="form-group">
           <label>Descripción:</label>
           <input

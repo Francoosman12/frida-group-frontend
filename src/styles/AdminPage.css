@@ -46,6 +46,13 @@
     background-color: red;
     z-index: 2;
   }
+
+  /* AdminPage.css */
+.scanner-container {
+    width: 100%;
+    height: auto;
+  }
+  
   
   
 
