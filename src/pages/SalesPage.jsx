@@ -122,33 +122,37 @@ const SalesPage = () => {
     <div className="sales-page">
       <h1 className="page-title">Ventas</h1>
       <div className="search-container">
-        <input
-          type="text"
-          value={ean}
-          onChange={(e) => setEan(e.target.value)}
-          placeholder="Ingrese el código EAN"
-          className="input-field"
-        />
-        <input
-          type="number"
-          value={quantity}
-          onChange={(e) => setQuantity(Number(e.target.value))}
-          min="1"
-          className="input-field"
-          placeholder="Cantidad"
-        />
-        <button onClick={handleRegisterSale} className="register-button">Registrar la venta</button>
+        <div className="form-container">
+          <input
+            type="text"
+            value={ean}
+            onChange={(e) => setEan(e.target.value)}
+            placeholder="Ingrese el código EAN"
+            className="input-field"
+          />
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            min="1"
+            className="input-field"
+            placeholder="Cantidad"
+          />
+          <button onClick={handleRegisterSale} className="register-button">Registrar la venta</button>
+        </div>
+        {product && (
+          <div className="product-details">
+            <h2>Detalles del Producto</h2>
+            <div className="product-info">
+              <p><strong>Descripción:</strong> {product.description}</p>
+              <p><strong>Stock:</strong> {product.stock}</p>
+              <p><strong>Precio:</strong> <span className="price-highlight">${product.price.toFixed(2)}</span></p>
+            </div>
+          </div>
+        )}
       </div>
       {error && <p className="error-message">{error}</p>}
       {outOfStockError && <p className="error-message">{outOfStockError}</p>}
-      {product && (
-        <div className="product-details">
-          <h2>Detalles del Producto</h2>
-          <p><strong>Descripción:</strong> {product.description}</p>
-          <p><strong>Precio:</strong> ${product.price.toFixed(2)}</p>
-          <p><strong>Stock:</strong> {product.stock}</p>
-        </div>
-      )}
       <div className="date-filter">
         <label>
           Fecha Inicio:
@@ -166,6 +170,9 @@ const SalesPage = () => {
             onChange={(e) => handleDateFilter(document.querySelector('input[name="startDate"]').value, e.target.value)}
           />
         </label>
+        <button onClick={() => handleDateFilter(document.querySelector('input[name="startDate"]').value, document.querySelector('input[name="endDate"]').value)}>
+          Filtrar
+        </button>
       </div>
       <div className="sales-list">
         <h2>Registro de Ventas</h2>
@@ -173,7 +180,7 @@ const SalesPage = () => {
           <thead>
             <tr>
               <th>Fecha</th>
-              <th>EAN</th>
+              
               <th>Descripción</th>
               <th>Cantidad</th>
               <th>Precio</th>
@@ -184,7 +191,7 @@ const SalesPage = () => {
             {currentSales.map((sale, index) => (
               <tr key={index}>
                 <td>{new Date(sale.date).toLocaleDateString()}</td>
-                <td>{sale.ean}</td>
+               
                 <td>{sale.product.description}</td>
                 <td>{sale.quantity}</td>
                 <td>${sale.price.toFixed(2)}</td>
@@ -192,7 +199,7 @@ const SalesPage = () => {
               </tr>
             ))}
             <tr>
-              <td colSpan="5"><strong>Total</strong></td>
+              <td colSpan="4"><strong>Total</strong></td>
               <td><strong>${totalAmount.toFixed(2)}</strong></td>
             </tr>
           </tbody>
@@ -202,7 +209,7 @@ const SalesPage = () => {
             <button
               key={i}
               onClick={() => handlePageChange(i + 1)}
-              className={`pagination-button ${currentPage === i + 1 ? 'active' : ''}`}
+              className={`page-button ${currentPage === i + 1 ? 'active' : ''}`}
             >
               {i + 1}
             </button>

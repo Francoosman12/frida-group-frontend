@@ -1,55 +1,96 @@
 /* src/styles/SalesRecordPage.css */
 
 .sales-record-page {
-    padding: 20px;
+    padding: 0 100px;
     max-width: 1200px;
     margin: 0 auto;
-  }
-  
-  .page-title {
+}
+
+.page-title {
     font-size: 2rem;
     margin-bottom: 20px;
     text-align: center;
-  }
-  
-  .sales-record-table {
+}
+
+.sales-record-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-  }
-  
-  .sales-record-table th,
-  .sales-record-table td {
-    padding: 10px;
+}
+
+.sales-record-table th,
+.sales-record-table td {
+    padding: 7px;
     border: 1px solid #ddd;
     text-align: center;
-  }
-  
-  .sales-record-table th {
+}
+
+.sales-record-table th {
     background-color: #f4f4f4;
     font-weight: bold;
-  }
-  
-  .sales-record-table tr:nth-child(even) {
+}
+
+.sales-record-table tr:nth-child(even) {
     background-color: #f9f9f9;
-  }
-  
-  .sales-record-table tr:hover {
+}
+
+.sales-record-table tr:hover {
     background-color: #f1f1f1;
-  }
-  
-  .sales-record-table td {
+}
+
+.sales-record-table td {
     font-size: 0.9rem;
-  }
-  
-  @media (max-width: 768px) {
-    .sales-record-table {
-      font-size: 0.8rem;
+}
+
+/* Media queries para hacer la página responsive */
+
+/* Pantallas medianas y pequeñas */
+@media (max-width: 1024px) {
+    .page-title {
+        font-size: 1.5rem; /* Reducir el tamaño del título en pantallas medianas */
     }
-  
+}
+
+/* Pantallas pequeñas (tablets y móviles) */
+@media (max-width: 768px) {
+    .sales-record-table {
+        font-size: 0.8rem; /* Reducir el tamaño de la fuente en la tabla */
+    }
+
     .sales-record-table th,
     .sales-record-table td {
-      padding: 8px;
+        padding: 8px; /* Reducir el padding en la tabla */
     }
-  }
-  
+    
+    .sales-record-table th {
+        font-size: 0.9rem; /* Reducir el tamaño de la fuente en los encabezados */
+    }
+
+    .sales-record-table td {
+        font-size: 0.8rem; /* Reducir el tamaño de la fuente en las celdas */
+    }
+}
+
+/* Pantallas extra pequeñas (móviles) */
+@media (max-width: 480px) {
+    .sales-record-page {
+        padding: 0;
+    
+    .page-title {
+        font-size: 1.2rem; /* Reducir aún más el tamaño del título */
+    }
+
+    .sales-record-table th,
+    .sales-record-table td {
+      /* Convertir las celdas de la tabla en bloques para dispositivos muy pequeños */
+        width: 100%; /* Hacer que las celdas ocupen el ancho completo */
+        box-sizing: border-box; /* Asegurarse de que el padding no haga que las celdas se desborden */
+        font-size: 10px;
+    }
+    
+    .sales-record-table th,
+    .sales-record-table td {
+        padding: 3px; /* Aumentar el padding para una mejor legibilidad en dispositivos muy pequeños */
+        text-align: left; /* Alinear el texto a la izquierda en lugar de centrado */
+    }
+}

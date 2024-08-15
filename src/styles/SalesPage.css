@@ -1,29 +1,35 @@
 .sales-page {
     font-family: Arial, sans-serif;
     margin: 10px;
-  }
-  
-  .page-title {
+    padding: 0 100px;
+}
+
+.page-title {
     text-align: center;
     color: #333;
-  }
-  
-  .search-container {
+}
+
+.search-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
-  }
-  
-  .input-field {
+}
+
+.form-container {
+    width: 50%;
+}
+
+.input-field {
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-right: 10px;
     width: 300px;
-  }
-  
-  .register-button {
+}
+
+.register-button {
     padding: 10px 20px;
     font-size: 16px;
     border: none;
@@ -31,91 +37,91 @@
     background-color: #28a745;
     color: white;
     cursor: pointer;
-  }
-  
-  .register-button:hover {
+}
+
+.register-button:hover {
     background-color: #218838;
-  }
-  
-  .error-message {
+}
+
+.error-message {
     color: red;
-    text-align: center;
-    margin-top: 10px;
-  }
-  
-  .product-details {
+    text-align: center; /* Añadido para alinear el texto de error al centro */
+}
+
+.product-details {
     margin-top: 20px;
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #f9f9f9;
-  }
-  
-  .sales-list {
+    width: 50%;
+}
+
+.sales-list {
     margin-top: 30px;
-  }
-  
-  .sales-table {
+}
+
+.sales-table {
     width: 100%;
     border-collapse: collapse;
-  }
-  
-  .sales-table th, .sales-table td {
+}
+
+.sales-table th, .sales-table td {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: left;
-  }
-  
-  .sales-table th {
+}
+
+.sales-table th {
     background-color: #f4f4f4;
-  }
-  
-  /* Pagination styles */
-  .pagination {
+}
+
+/* Pagination styles */
+.pagination {
     margin-top: 20px;
     display: flex;
     justify-content: center;
-  }
-  
-  .page-button {
+}
+
+.page-button {
     margin: 0 5px;
     padding: 5px 10px;
     border: 1px solid #ddd;
     background-color: #f8f9fa;
     cursor: pointer;
-  }
-  
-  .page-button.active {
+}
+
+.page-button.active {
     background-color: #007bff;
     color: #fff;
     border-color: #007bff;
-  }
-  
-  .page-button:hover {
+}
+
+.page-button:hover {
     background-color: #e2e6ea;
-  }
-  
-  .date-filter {
+}
+
+.date-filter {
     margin: 20px 0;
     display: flex;
     justify-content: space-between;
-  }
-  
-  .date-filter label {
+}
+
+.date-filter label {
     display: flex;
     flex-direction: column;
     font-size: 16px;
     width: 45%;
-  }
-  
-  .date-filter input[type="date"] {
+}
+
+.date-filter input[type="date"] {
     padding: 5px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
-  }
-  
-  .date-filter button {
+}
+
+.date-filter button {
     padding: 10px 20px;
     font-size: 16px;
     background-color: #007bff;
@@ -123,9 +129,118 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-  }
-  
-  .date-filter button:hover {
+}
+
+.date-filter button:hover {
     background-color: #0056b3;
-  }
-  
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+    .form-container {
+        width: 70%;
+    }
+
+    .input-field {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .product-details {
+        width: 100%;
+    }
+}
+
+@media (max-width: 992px) {
+    .search-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-field {
+        margin-bottom: 10px;
+    }
+
+    .form-container {
+        width: 100%;
+    }
+
+    .date-filter {
+        flex-direction: column;
+    }
+
+    .date-filter label,
+    .date-filter button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .sales-list {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .input-field {
+        font-size: 14px;
+    }
+
+    .register-button {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    .sales-table th, .sales-table td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .page-button {
+        padding: 4px 8px;
+    }
+
+    .date-filter label,
+    .date-filter button {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .sales-page {
+        padding: 0;
+    }
+    .search-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-field {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .register-button {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .product-details {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .sales-table th, .sales-table td {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .page-button {
+        padding: 3px 6px;
+        font-size: 12px;
+    }
+
+    .date-filter label,
+    .date-filter button {
+        font-size: 12px;
+    }
+}

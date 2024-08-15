@@ -7,6 +7,9 @@ import { SalesProvider } from './context/SalesContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import './App.css'; // Importa el archivo CSS global si es necesario
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min'; // Para el JavaScript de Bootstrap
+
 
 function App() {
   return (

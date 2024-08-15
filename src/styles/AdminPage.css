@@ -1,46 +1,47 @@
+/* Estilos generales para la página de administración */
 .admin-page {
     font-family: Arial, sans-serif;
     margin: 20px;
-    padding: 20px;
-  }
-  
-  .page-title {
+    padding: 0 100px;
+}
+
+.page-title {
     text-align: center;
     color: #333;
-  }
-  
-  .form-title {
+}
+
+.form-title {
     text-align: center;
     margin-bottom: 20px;
     color: #555;
-  }
-  
-  .product-form {
+}
+
+.product-form {
     display: flex;
     flex-direction: column;
     max-width: 600px;
     margin: 0 auto;
-  }
-  
-  .form-group {
+}
+
+.form-group {
     margin-bottom: 15px;
-  }
-  
-  .form-group label {
+}
+
+.form-group label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
-  }
-  
-  .form-input {
+}
+
+.form-input {
     width: 100%;
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ddd;
     border-radius: 4px;
-  }
-  
-  .submit-button {
+}
+
+.submit-button {
     padding: 10px 20px;
     font-size: 16px;
     border: none;
@@ -49,41 +50,41 @@
     color: white;
     cursor: pointer;
     margin-top: 10px;
-  }
-  
-  .submit-button:hover {
+}
+
+.submit-button:hover {
     background-color: #0056b3;
-  }
-  
-  .error-message {
+}
+
+.error-message {
     color: red;
     text-align: center;
     margin-top: 10px;
-  }
-  
-  .table-title {
+}
+
+.table-title {
     text-align: center;
     margin-top: 30px;
     color: #555;
-  }
-  
-  .products-table {
+}
+
+.products-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-  }
-  
-  .products-table th, .products-table td {
+}
+
+.products-table th, .products-table td {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: left;
-  }
-  
-  .products-table th {
+}
+
+.products-table th {
     background-color: #f4f4f4;
-  }
-  
-  .action-button {
+}
+
+.action-button {
     padding: 5px 10px;
     font-size: 14px;
     border: none;
@@ -91,30 +92,69 @@
     color: white;
     cursor: pointer;
     margin-right: 5px;
-  }
-  
-  .action-button:first-of-type {
+}
+
+.action-button:first-of-type {
     background-color: #28a745;
-  }
-  
-  .action-button:first-of-type:hover {
+}
+
+.action-button:first-of-type:hover {
     background-color: #218838;
-  }
-  
-  .action-button:last-of-type {
+}
+
+.action-button:last-of-type {
     background-color: #dc3545;
-  }
-  
-  .action-button:last-of-type:hover {
+}
+
+.action-button:last-of-type:hover {
     background-color: #c82333;
-  }
-  .edit-button{
+}
+
+.edit-button {
     background-color: #218838;
     color: white;
     margin: 5px;
-  }
-  .delete-button{
+}
+
+.delete-button {
     background-color: red;
     color: white;
     margin: 5px;
-  }
+}
+
+/* Media queries para hacer la página responsive */
+
+/* Pantallas pequeñas (móviles) */
+@media (max-width: 767px) {
+    .admin-page {
+        padding: 0; /* Menor padding en móviles */
+    }
+
+    .product-form {
+        width: 100%; /* Formulario ocupa el ancho completo en móviles */
+        padding: 0 10px; /* Padding para el formulario */
+    }
+
+    .submit-button {
+        width: 100%; /* Botón ocupa el ancho completo en móviles */
+        font-size: 15px; /* Aumentar tamaño del texto en el botón */
+    }
+
+    .products-table {
+        font-size: 9px; /* Reducir tamaño de fuente en la tabla */
+    }
+
+    .products-table th, .products-table td {
+        padding: 5px; /* Reducir padding en la tabla */
+    }
+
+    .action-button {
+        display: block; /* Botones en una línea en lugar de en línea */
+        width: 100%; /* Botones ocupan el ancho completo */
+        margin-bottom: 1px; /* Margen entre botones */
+    }
+
+    .edit-button, .delete-button {
+        width: 80%; /* Botones ocupan el ancho completo */
+    }
+}
