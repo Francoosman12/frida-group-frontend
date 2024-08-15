@@ -15,9 +15,12 @@
     align-items: center;
     margin-bottom: 20px;
 }
-
+label{
+    padding: 10px;
+}
 .form-container {
     width: 50%;
+    padding: 15px;
 }
 
 .input-field {

@@ -123,6 +123,7 @@ const SalesPage = () => {
       <h1 className="page-title">Ventas</h1>
       <div className="search-container">
         <div className="form-container">
+          <label>Ingrese el codigo EAN:</label>
           <input
             type="text"
             value={ean}
@@ -130,6 +131,7 @@ const SalesPage = () => {
             placeholder="Ingrese el código EAN"
             className="input-field"
           />
+          <label>Ingrese la cantidad:</label>
           <input
             type="number"
             value={quantity}

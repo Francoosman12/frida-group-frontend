@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
+// src/components/AdminPage.jsx
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import JsBarcode from 'jsbarcode';
+import Webcam from 'react-webcam';
 import '../styles/AdminPage.css';
 
 const AdminPage = () => {
@@ -10,6 +13,8 @@ const AdminPage = () => {
   const [stock, setStock] = useState('');
   const [editProductId, setEditProductId] = useState(null);
   const [error, setError] = useState('');
+  const [showScanner, setShowScanner] = useState(false);
+  const webcamRef = useRef(null);
 
   const fetchProducts = async () => {
     try {
@@ -75,6 +80,20 @@ const AdminPage = () => {
     }
   };
 
+  const handleScan = () => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    JsBarcode(imageSrc, {
+      // Options for barcode generation
+      format: "EAN13",
+      displayValue: true,
+      width: 2,
+      height: 60,
+    });
+    // Assuming `JsBarcode` is correctly generating the barcode from the image
+    // and you have a function to read the barcode data.
+    // You need to implement the barcode reading from the image.
+  };
+
   return (
     <div className="admin-page">
       <h1 className="page-title">Administración</h1>
@@ -90,7 +109,27 @@ const AdminPage = () => {
             required
             className="form-input"
           />
+          <button
+            type="button"
+            onClick={() => setShowScanner(!showScanner)}
+            className="scan-button"
+          >
+            {showScanner ? 'Cerrar Escáner' : 'Escanear EAN'}
+          </button>
         </div>
+        {showScanner && (
+          <div>
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              width="100%"
+            />
+            <button type="button" onClick={handleScan} className="scan-button">
+              Escanear
+            </button>
+          </div>
+        )}
         <div className="form-group">
           <label>Descripción:</label>
           <input
