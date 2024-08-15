@@ -155,27 +155,6 @@ const SalesPage = () => {
       </div>
       {error && <p className="error-message">{error}</p>}
       {outOfStockError && <p className="error-message">{outOfStockError}</p>}
-      <div className="date-filter">
-        <label>
-          Fecha Inicio:
-          <input
-            type="date"
-            name="startDate"
-            onChange={(e) => handleDateFilter(e.target.value, document.querySelector('input[name="endDate"]').value)}
-          />
-        </label>
-        <label>
-          Fecha Fin:
-          <input
-            type="date"
-            name="endDate"
-            onChange={(e) => handleDateFilter(document.querySelector('input[name="startDate"]').value, e.target.value)}
-          />
-        </label>
-        <button onClick={() => handleDateFilter(document.querySelector('input[name="startDate"]').value, document.querySelector('input[name="endDate"]').value)}>
-          Filtrar
-        </button>
-      </div>
       <div className="sales-list">
         <h2>Registro de Ventas</h2>
         <table className="sales-table">
