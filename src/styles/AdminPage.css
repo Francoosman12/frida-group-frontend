@@ -49,11 +49,12 @@
 
   /* AdminPage.css */
 .scanner {
-    width: 100%;
-    max-width: 400px; /* Limita el tamaño máximo de la cámara */
-    height: auto;
+    width: 100%; /* Asegúrate de que ocupe el 100% del ancho */
+    max-width: 400px; /* Máximo ancho para pantallas grandes */
+    height: auto; /* Ajusta la altura automáticamente */
     margin: 0 auto; /* Centra el contenedor */
     position: relative;
+    text-align: center;
   }
   
   
@@ -203,6 +204,7 @@
     .scanner {
         width: 100%; /* Asegúrate de que ocupe el 100% del ancho en pantallas pequeñas */
         max-width: none; /* Desactiva el límite de tamaño máximo */
-        height: 300px; /* Establece una altura específica para dispositivos móviles */
-      }
+        height: auto; /* Ajusta la altura automáticamente */
+        position: relative; /* Mantiene la posición relativa para el escáner */
+    }
 }
