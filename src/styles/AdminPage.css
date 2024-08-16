@@ -60,8 +60,7 @@
     position:relative;
   }
   
-  
-  
+
 
 .product-form {
     display: flex;
@@ -96,7 +95,7 @@
     background-color: #007bff;
     color: white;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: -10px;
 }
 
 .submit-button:hover {
@@ -208,6 +207,9 @@
         width: 100%; /* Asegúrate de que ocupe el 100% del ancho en pantallas pequeñas */
         max-width: none; /* Desactiva el límite de tamaño máximo */
         height: auto; /* Ajusta la altura automáticamente */
-        position: relative; /* Mantiene la posición relativa para el escáner */
+        /* Mantiene la posición relativa para el escáner */
+        overflow: hidden;
     }
+   
+    
 }
