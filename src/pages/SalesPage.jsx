@@ -4,15 +4,13 @@ import { useSales } from '../context/SalesContext';
 import '../styles/SalesPage.css';
 
 const SalesPage = () => {
-  const { sales, addSale } = useSales();
+  const { addSale } = useSales();
   const [ean, setEan] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState(null);
   const [error, setError] = useState('');
   const [outOfStockError, setOutOfStockError] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [salesPerPage] = useState(20);
-  const [filteredSales, setFilteredSales] = useState([]);
+  const [cart, setCart] = useState([]);
   const [debouncedEan, setDebouncedEan] = useState(ean);
 
   useEffect(() => {
@@ -29,10 +27,10 @@ const SalesPage = () => {
         try {
           const response = await axios.get(`${import.meta.env.VITE_API_URL}/products/search?ean=${debouncedEan}`);
           setProduct(response.data || null);
-          setError(response.data ? '' : 'Product not found');
+          setError(response.data ? '' : 'Producto no encontrado');
           setOutOfStockError('');
         } catch (err) {
-          setError('Error fetching product');
+          setError('Error al buscar producto');
         }
       };
       fetchProduct();
@@ -42,88 +40,85 @@ const SalesPage = () => {
     }
   }, [debouncedEan]);
 
-  const handleRegisterSale = async () => {
+  const handleAddToCart = () => {
     if (product) {
       if (product.stock < quantity) {
-        setOutOfStockError('Product out of stock');
+        setOutOfStockError('Producto sin stock suficiente');
         return;
       }
 
+      const cartItem = {
+        ...product,
+        quantity,
+      };
+
+      setCart([...cart, cartItem]);
+      setProduct(null);
+      setEan('');
+      setQuantity(1);
+      setOutOfStockError('');
+    }
+  };
+
+  const handleRegisterSale = async () => {
+    if (cart.length > 0) {
       try {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/sales`, {
-          ean: product.ean,
-          quantity: quantity,
-          price: product.price,
+        const saleRequests = cart.map((item) => {
+          return axios.post(`${import.meta.env.VITE_API_URL}/sales`, {
+            ean: item.ean,
+            quantity: item.quantity,
+            price: item.price,
+          });
         });
 
-        addSale({
-          ...product,
-          quantity: quantity,
-          date: new Date().toISOString(),
-          saleNumber: response.data._id,
+        await Promise.all(saleRequests);
+
+        // Añadir ventas al contexto (si es necesario)
+        cart.forEach((item) => {
+          addSale({
+            ...item,
+            date: new Date().toISOString(),
+          });
         });
 
+        setCart([]);
         setProduct(null);
         setEan('');
         setQuantity(1);
         setOutOfStockError('');
+        setError('');
       } catch (err) {
-        console.error('Error registering sale:', err.response?.data || err.message);
-        setError('Error registering sale');
+        console.error('Error al registrar la venta:', err.response?.data || err.message);
+        setError('Error al registrar la venta');
       }
     }
   };
 
-  useEffect(() => {
-    const fetchSales = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/sales`, {
-          params: {
-            startDate: '2024-01-01', // Cambiar según tu lógica de fecha
-            endDate: '2024-12-31'    // Cambiar según tu lógica de fecha
-          }
-        });
-        setFilteredSales(response.data);
-      } catch (err) {
-        console.error('Error fetching sales:', err.response?.data || err.message);
+  const handleQuantityChange = (index, increment) => {
+    const updatedCart = cart.map((item, i) => {
+      if (i === index) {
+        const newQuantity = item.quantity + increment;
+        if (newQuantity > 0 && newQuantity <= item.stock) {
+          return { ...item, quantity: newQuantity };
+        }
       }
-    };
-
-    fetchSales();
-  }, []);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const handleDateFilter = (startDate, endDate) => {
-    if (!startDate || !endDate) {
-      setFilteredSales(sales);
-      setCurrentPage(1);
-      return;
-    }
-
-    const filtered = sales.filter(sale => {
-      const saleDate = new Date(sale.date);
-      return saleDate >= new Date(startDate) && saleDate <= new Date(endDate);
+      return item;
     });
-
-    setFilteredSales(filtered);
-    setCurrentPage(1);
+    setCart(updatedCart);
   };
 
-  const totalAmount = filteredSales.reduce((acc, sale) => acc + (sale.price * sale.quantity), 0);
+  const handleRemoveFromCart = (index) => {
+    setCart(cart.filter((_, i) => i !== index));
+  };
 
-  const indexOfLastSale = currentPage * salesPerPage;
-  const indexOfFirstSale = indexOfLastSale - salesPerPage;
-  const currentSales = filteredSales.slice(indexOfFirstSale, indexOfLastSale);
+  const totalAmount = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
     <div className="sales-page">
       <h1 className="page-title">Ventas</h1>
       <div className="search-container">
         <div className="form-container">
-          <label>Ingrese el codigo EAN:</label>
+          <label>Ingrese el código EAN:</label>
           <input
             type="text"
             value={ean}
@@ -140,7 +135,7 @@ const SalesPage = () => {
             className="input-field"
             placeholder="Cantidad"
           />
-          <button onClick={handleRegisterSale} className="register-button">Registrar la venta</button>
+          <button onClick={handleAddToCart} className="register-button">Agregar al carrito</button>
         </div>
         {product && (
           <div className="product-details">
@@ -155,47 +150,42 @@ const SalesPage = () => {
       </div>
       {error && <p className="error-message">{error}</p>}
       {outOfStockError && <p className="error-message">{outOfStockError}</p>}
-      <div className="sales-list">
-        <h2>Registro de Ventas</h2>
-        <table className="sales-table">
+      <div className="cart-list">
+        <h2>Carrito de Ventas</h2>
+        <table className="cart-table">
           <thead>
             <tr>
-              <th>Fecha</th>
-              
               <th>Descripción</th>
               <th>Cantidad</th>
               <th>Precio</th>
               <th>Total</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {currentSales.map((sale, index) => (
+            {cart.map((item, index) => (
               <tr key={index}>
-                <td>{new Date(sale.date).toLocaleDateString()}</td>
-               
-                <td>{sale.product?.description}</td>
-                <td>{sale.quantity}</td>
-                <td>${sale.price.toFixed(2)}</td>
-                <td>${(sale.price * sale.quantity).toFixed(2)}</td>
+                <td>{item.description}</td>
+                <td>
+                  <button onClick={() => handleQuantityChange(index, -1)} className="quantity-button">-</button>
+                  <span className="quantity-value">{item.quantity}</span>
+                  <button onClick={() => handleQuantityChange(index, 1)} className="quantity-button">+</button>
+                </td>
+                <td>${item.price.toFixed(2)}</td>
+                <td>${(item.price * item.quantity).toFixed(2)}</td>
+                <td>
+                  <button onClick={() => handleRemoveFromCart(index)} className="remove-button">🗑️</button>
+                </td>
               </tr>
             ))}
             <tr>
-              <td colSpan="4"><strong>Total</strong></td>
+              <td colSpan="3"><strong>Total</strong></td>
               <td><strong>${totalAmount.toFixed(2)}</strong></td>
+              <td></td>
             </tr>
           </tbody>
         </table>
-        <div className="pagination">
-          {Array.from({ length: Math.ceil(filteredSales.length / salesPerPage) }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => handlePageChange(i + 1)}
-              className={`page-button ${currentPage === i + 1 ? 'active' : ''}`}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
+        <button onClick={handleRegisterSale} className="register-button">Registrar venta</button>
       </div>
     </div>
   );

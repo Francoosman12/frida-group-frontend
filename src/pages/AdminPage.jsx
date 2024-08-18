@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import Quagga from 'quagga'; // Importa QuaggaJS
+import Quagga from 'quagga';
 import '../styles/AdminPage.css';
 
 const AdminPage = () => {
@@ -17,6 +17,7 @@ const AdminPage = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/products`);
+      console.log('Fetched Products:', response.data); // Verifica la estructura de los datos obtenidos
       setProducts(response.data);
     } catch (err) {
       console.error('Error fetching products:', err);
@@ -84,13 +85,13 @@ const AdminPage = () => {
       {
         inputStream: {
           type: 'LiveStream',
-          target: scannerRef.current, // Utiliza la referencia al div donde se mostrará el video
+          target: scannerRef.current,
           constraints: {
-            facingMode: 'environment' // Usar la cámara trasera
+            facingMode: 'environment'
           }
         },
         decoder: {
-          readers: ['ean_reader'] // Soporta códigos EAN
+          readers: ['ean_reader']
         }
       },
       (err) => {
@@ -105,8 +106,8 @@ const AdminPage = () => {
 
     Quagga.onDetected((result) => {
       setEan(result.codeResult.code);
-      Quagga.stop(); // Detener el escaneo después de detectar un código
-      setShowScanner(false); // Ocultar el escáner después de leer el código
+      Quagga.stop();
+      setShowScanner(false);
     });
   };
 
@@ -184,18 +185,21 @@ const AdminPage = () => {
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
-            <tr key={product._id}>
-              <td>{product.ean}</td>
-              <td>{product.description}</td>
-              <td>${product.price.toFixed(2)}</td>
-              <td>{product.stock}</td>
-              <td>
-                <button onClick={() => handleEdit(product)} className="edit-button">Editar</button>
-                <button onClick={() => handleDelete(product._id)} className="delete-button">Eliminar</button>
-              </td>
-            </tr>
-          ))}
+          {products.map((product) => {
+            console.log('Product:', product); // Verifica la estructura de cada producto
+            return (
+              <tr key={product._id}>
+                <td>{product.ean}</td>
+                <td>{product.description}</td> {/* Asegúrate de que 'description' esté presente */}
+                <td>${product.price.toFixed(2)}</td>
+                <td>{product.stock}</td>
+                <td>
+                  <button onClick={() => handleEdit(product)} className="edit-button">Editar</button>
+                  <button onClick={() => handleDelete(product._id)} className="delete-button">Eliminar</button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

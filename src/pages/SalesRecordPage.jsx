@@ -5,7 +5,7 @@ import '../styles/SalesRecordPage.css'; // Asegúrate de importar el CSS
 const SalesRecordPage = () => {
   const [sales, setSales] = useState([]);
   const [error, setError] = useState('');
-  const [totalAmount, setTotalAmount] = useState(0); // Nuevo estado para el total
+  const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
     const fetchSales = async () => {
@@ -48,7 +48,7 @@ const SalesRecordPage = () => {
               <tr key={index}>
                 <td>{new Date(sale.date).toLocaleDateString()}</td>
                 <td>{sale.ean}</td>
-                <td>{sale.product?.description || 'N/A'}</td>
+                <td>{sale.product ? sale.product.description : 'N/A'}</td>
                 <td>{sale.quantity || 0}</td>
                 <td>${(sale.price ? sale.price.toFixed(2) : '0.00')}</td>
                 <td>${(sale.price && sale.quantity ? (sale.price * sale.quantity).toFixed(2) : '0.00')}</td>
