@@ -5,7 +5,7 @@ import '../styles/Footer.css'; // Importa el archivo CSS para el Footer
 const Footer = () => {
   return (
     <footer className="footer">
-      <p>&copy; 2024 Sales App. All rights reserved.</p>
+      <p>&copy; 2024 DevOs. All rights reserved.</p>
     </footer>
   );
 };
