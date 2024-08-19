@@ -116,8 +116,8 @@ const SalesPage = () => {
   return (
     <div className="sales-page">
       <h1 className="page-title">Ventas</h1>
-      <div className="search-container">
-        <div className="form-container">
+      <div className="search-container col-xl-12 d-sm-flex justify-content-center">
+        <div className="form-container col-xl-6">
           <label>Ingrese el código EAN:</label>
           <input
             type="text"
@@ -138,7 +138,7 @@ const SalesPage = () => {
           <button onClick={handleAddToCart} className="register-button">Agregar al carrito</button>
         </div>
         {product && (
-          <div className="product-details">
+          <div className="product-details col-xl-6">
             <h2>Detalles del Producto</h2>
             <div className="product-info">
               <p><strong>Descripción:</strong> {product.description}</p>
