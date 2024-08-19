@@ -69,6 +69,39 @@ border: 0 solid;
 color: white;
 }
 
+.boton-exportar:hover{
+    background-color: red;
+    border: solid 0;
+    color: white;
+}
+
+/* SalesRecordPage.css */
+
+/* Estilo para los botones de paginación */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .page-button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+  
+  .page-button.active {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .page-button:hover {
+    background-color: #ddd;
+  }
+  
+
 /* Media queries para hacer la página responsive */
 
 /* Pantallas medianas y pequeñas */
@@ -76,12 +109,18 @@ color: white;
     .page-title {
         font-size: 1.5rem; /* Reducir el tamaño del título en pantallas medianas */
     }
+    .sales-record-page {
+        padding: 0 10px;
+       
+        margin: 0 auto;
+    }
 }
 
 /* Pantallas pequeñas (tablets y móviles) */
 @media (max-width: 768px) {
     .sales-record-table {
         font-size: 0.8rem; /* Reducir el tamaño de la fuente en la tabla */
+       
     }
 
     .sales-record-table th,
@@ -104,6 +143,13 @@ color: white;
     .filter-container input[type="date"] {
         width: 100%;
     }
+    .page-button {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        padding: 5px;
+        margin: 0 5px;
+        cursor: pointer;
+      }
 }
 
 /* Pantallas extra pequeñas (móviles) */
@@ -120,7 +166,7 @@ color: white;
       /* Convertir las celdas de la tabla en bloques para dispositivos muy pequeños */
         width: 100%; /* Hacer que las celdas ocupen el ancho completo */
         box-sizing: border-box; /* Asegurarse de que el padding no haga que las celdas se desborden */
-        font-size: 10px;
+        font-size: 8px;
     }
     
     .sales-record-table th,

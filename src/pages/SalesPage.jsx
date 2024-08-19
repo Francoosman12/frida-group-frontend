@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useSales } from '../context/SalesContext';
 import '../styles/SalesPage.css';
@@ -12,6 +12,7 @@ const SalesPage = () => {
   const [outOfStockError, setOutOfStockError] = useState('');
   const [cart, setCart] = useState([]);
   const [debouncedEan, setDebouncedEan] = useState(ean);
+  const barcodeInputRef = useRef(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -113,6 +114,31 @@ const SalesPage = () => {
 
   const totalAmount = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
+  const handleBarcodeScan = (e) => {
+    if (e.key === 'Enter') {  // Asume que el lector de código de barras envía un "Enter" después del código
+      e.preventDefault();
+      const scannedEAN = barcodeInputRef.current.value.trim();
+      if (scannedEAN) {
+        setEan(scannedEAN);
+        barcodeInputRef.current.value = ''; // Limpiar el campo después de procesar
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Agrega un listener para el evento de teclado cuando el componente se monta
+    const handleKeyDown = (e) => {
+      if (barcodeInputRef.current) {
+        barcodeInputRef.current.value += e.key;
+        if (e.key === 'Enter') {
+          handleBarcodeScan(e);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div className="sales-page">
       <h1 className="page-title">Ventas</h1>
@@ -187,6 +213,11 @@ const SalesPage = () => {
         </table>
         <button onClick={handleRegisterSale} className="register-button">Registrar venta</button>
       </div>
+      <input
+        type="text"
+        ref={barcodeInputRef}
+        style={{ position: 'absolute', top: '-100px', left: '-100px' }} // Ocultar el input
+      />
     </div>
   );
 };
