@@ -68,7 +68,11 @@ background-color: green;
 border: 0 solid;
 color: white;
 }
-
+.boton-descargar:hover{
+background-color: red;
+border: solid 0;
+color: white;
+}
 /* Media queries para hacer la página responsive */
 
 /* Pantallas medianas y pequeñas */
