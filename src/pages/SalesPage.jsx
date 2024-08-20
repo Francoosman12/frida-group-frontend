@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useSales } from '../context/SalesContext';
 import '../styles/SalesPage.css';
-import Quagga from 'quagga';
 
 const SalesPage = () => {
   const { addSale } = useSales();
@@ -13,9 +12,7 @@ const SalesPage = () => {
   const [outOfStockError, setOutOfStockError] = useState('');
   const [cart, setCart] = useState([]);
   const [debouncedEan, setDebouncedEan] = useState(ean);
-  const [showScanner, setShowScanner] = useState(false);
-  const scannerRef = useRef(null);
-  const scanTimeoutRef = useRef(null);
+  const barcodeInputRef = useRef(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -117,64 +114,29 @@ const SalesPage = () => {
 
   const totalAmount = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const handleScan = () => {
-    setShowScanner(true);
-
-    Quagga.init(
-      {
-        inputStream: {
-          type: 'LiveStream',
-          target: scannerRef.current,
-          constraints: {
-            facingMode: 'environment',
-            width: window.innerWidth,
-            height: window.innerHeight,
-            aspectRatio: { min: 1, max: 100 }
-          },
-          singleChannel: false
-        },
-        decoder: {
-          readers: ['ean_reader'],
-          multiple: false
-        },
-        locate: true,
-        locator: {
-          halfSample: true,
-          patchSize: 'medium'
-        }
-      },
-      (err) => {
-        if (err) {
-          console.error('Error initializing Quagga:', err);
-          setError('Error initializing Quagga');
-          return;
-        }
-        Quagga.start();
-
-        // Configura el manejador para el evento onDetected
-        Quagga.onDetected((data) => {
-          if (data.codeResult) {
-            setEan(data.codeResult.code);
-            Quagga.stop();
-            setShowScanner(false);
-          }
-        });
-
-        // Configura un tiempo límite para detener el escaneo después de 10 segundos
-        scanTimeoutRef.current = setTimeout(() => {
-          Quagga.stop();
-          setShowScanner(false);
-          console.warn('Escaneo detenido por tiempo límite.');
-        }, 10000);
+  const handleBarcodeScan = (e) => {
+    if (e.key === 'Enter') {  // Asume que el lector de código de barras envía un "Enter" después del código
+      e.preventDefault();
+      const scannedEAN = barcodeInputRef.current.value.trim();
+      if (scannedEAN) {
+        setEan(scannedEAN);
+        barcodeInputRef.current.value = ''; // Limpiar el campo después de procesar
       }
-    );
+    }
   };
 
   useEffect(() => {
-    return () => {
-      Quagga.stop();
-      Quagga.offDetected(); // Limpiar manejador si existe
+    // Agrega un listener para el evento de teclado cuando el componente se monta
+    const handleKeyDown = (e) => {
+      if (barcodeInputRef.current) {
+        barcodeInputRef.current.value += e.key;
+        if (e.key === 'Enter') {
+          handleBarcodeScan(e);
+        }
+      }
     };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   return (
@@ -190,14 +152,6 @@ const SalesPage = () => {
             placeholder="Ingrese el código EAN"
             className="input-field"
           />
-          <button
-            type="button"
-            onClick={handleScan}
-            className="scan-button"
-          >
-            {showScanner ? 'Abrir escáner...' : 'Escanear EAN'}
-          </button>
-          {showScanner && <div ref={scannerRef} className="scanner"></div>}
           <label>Ingrese la cantidad:</label>
           <input
             type="number"
@@ -259,6 +213,11 @@ const SalesPage = () => {
         </table>
         <button onClick={handleRegisterSale} className="register-button">Registrar venta</button>
       </div>
+      <input
+        type="text"
+        ref={barcodeInputRef}
+        style={{ position: 'absolute', top: '-100px', left: '-100px' }} // Ocultar el input
+      />
     </div>
   );
 };
