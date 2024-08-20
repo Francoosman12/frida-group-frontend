@@ -127,20 +127,20 @@ const SalesPage = () => {
           target: scannerRef.current,
           constraints: {
             facingMode: 'environment',
-            width: window.innerWidth,  // Ajusta la resolución del video
-            height: window.innerHeight, // Ajusta la resolución del video
+            width: window.innerWidth,
+            height: window.innerHeight,
             aspectRatio: { min: 1, max: 100 }
           },
-          singleChannel: false // Habilita color para mejorar la detección
+          singleChannel: false
         },
         decoder: {
           readers: ['ean_reader'],
-          multiple: false // Escanea solo un código a la vez
+          multiple: false
         },
-        locate: true, // Permite localizar códigos en el cuadro
+        locate: true,
         locator: {
           halfSample: true,
-          patchSize: 'medium' // Ajusta el tamaño de los parches de imagen
+          patchSize: 'medium'
         }
       },
       (err) => {
@@ -151,15 +151,31 @@ const SalesPage = () => {
         }
         Quagga.start();
 
+        // Configura el manejador para el evento onDetected
+        Quagga.onDetected((data) => {
+          if (data.codeResult) {
+            setEan(data.codeResult.code);
+            Quagga.stop();
+            setShowScanner(false);
+          }
+        });
+
         // Configura un tiempo límite para detener el escaneo después de 10 segundos
         scanTimeoutRef.current = setTimeout(() => {
           Quagga.stop();
           setShowScanner(false);
           console.warn('Escaneo detenido por tiempo límite.');
-        }, 10000); // 10 segundos
+        }, 10000);
       }
     );
   };
+
+  useEffect(() => {
+    return () => {
+      Quagga.stop();
+      Quagga.offDetected(); // Limpiar manejador si existe
+    };
+  }, []);
 
   return (
     <div className="sales-page">
@@ -246,6 +262,5 @@ const SalesPage = () => {
     </div>
   );
 };
-
 
 export default SalesPage;
