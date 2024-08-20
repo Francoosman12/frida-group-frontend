@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useSales } from '../context/SalesContext';
 import '../styles/SalesPage.css';
+import Quagga from 'quagga';
 
 const SalesPage = () => {
   const { addSale } = useSales();
@@ -12,6 +13,9 @@ const SalesPage = () => {
   const [outOfStockError, setOutOfStockError] = useState('');
   const [cart, setCart] = useState([]);
   const [debouncedEan, setDebouncedEan] = useState(ean);
+  const [showScanner, setShowScanner] = useState(false);
+  const scannerRef = useRef(null);
+  const scanTimeoutRef = useRef(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -113,6 +117,50 @@ const SalesPage = () => {
 
   const totalAmount = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
+  const handleScan = () => {
+    setShowScanner(true);
+
+    Quagga.init(
+      {
+        inputStream: {
+          type: 'LiveStream',
+          target: scannerRef.current,
+          constraints: {
+            facingMode: 'environment',
+            width: window.innerWidth,  // Ajusta la resolución del video
+            height: window.innerHeight, // Ajusta la resolución del video
+            aspectRatio: { min: 1, max: 100 }
+          },
+          singleChannel: false // Habilita color para mejorar la detección
+        },
+        decoder: {
+          readers: ['ean_reader'],
+          multiple: false // Escanea solo un código a la vez
+        },
+        locate: true, // Permite localizar códigos en el cuadro
+        locator: {
+          halfSample: true,
+          patchSize: 'medium' // Ajusta el tamaño de los parches de imagen
+        }
+      },
+      (err) => {
+        if (err) {
+          console.error('Error initializing Quagga:', err);
+          setError('Error initializing Quagga');
+          return;
+        }
+        Quagga.start();
+
+        // Configura un tiempo límite para detener el escaneo después de 10 segundos
+        scanTimeoutRef.current = setTimeout(() => {
+          Quagga.stop();
+          setShowScanner(false);
+          console.warn('Escaneo detenido por tiempo límite.');
+        }, 10000); // 10 segundos
+      }
+    );
+  };
+
   return (
     <div className="sales-page">
       <h1 className="page-title">Ventas</h1>
@@ -126,6 +174,14 @@ const SalesPage = () => {
             placeholder="Ingrese el código EAN"
             className="input-field"
           />
+          <button
+            type="button"
+            onClick={handleScan}
+            className="scan-button"
+          >
+            {showScanner ? 'Abrir escáner...' : 'Escanear EAN'}
+          </button>
+          {showScanner && <div ref={scannerRef} className="scanner"></div>}
           <label>Ingrese la cantidad:</label>
           <input
             type="number"
@@ -190,5 +246,6 @@ const SalesPage = () => {
     </div>
   );
 };
+
 
 export default SalesPage;

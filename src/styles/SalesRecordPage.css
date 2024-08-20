@@ -73,6 +73,18 @@ background-color: red;
 border: solid 0;
 color: white;
 }
+
+.pagination{
+    padding: 15px;
+}
+.pagination-button{
+    background-color: #F4F4F4;
+}
+.pagination button:hover{
+background-color: #333333;
+border: solid 0;
+color: white;
+}
 /* Media queries para hacer la página responsive */
 
 /* Pantallas medianas y pequeñas */

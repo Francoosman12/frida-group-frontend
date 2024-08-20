@@ -155,7 +155,7 @@ const AdminPage = () => {
             onClick={handleScan}
             className="scan-button"
           >
-            {showScanner ? 'Cerrando escáner...' : 'Escanear EAN'}
+            {showScanner ? 'Abrir escáner...' : 'Escanear EAN'}
           </button>
         </div>
         {showScanner && <div ref={scannerRef} className="scanner"></div>}
