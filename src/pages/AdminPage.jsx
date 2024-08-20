@@ -13,11 +13,12 @@ const AdminPage = () => {
   const [error, setError] = useState('');
   const [showScanner, setShowScanner] = useState(false);
   const scannerRef = useRef(null);
+  const scanTimeoutRef = useRef(null);
 
   const fetchProducts = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/products`);
-      console.log('Fetched Products:', response.data); // Verifica la estructura de los datos obtenidos
+      console.log('Fetched Products:', response.data);
       setProducts(response.data);
     } catch (err) {
       console.error('Error fetching products:', err);
@@ -81,17 +82,28 @@ const AdminPage = () => {
 
   const handleScan = () => {
     setShowScanner(true);
+
     Quagga.init(
       {
         inputStream: {
           type: 'LiveStream',
           target: scannerRef.current,
           constraints: {
-            facingMode: 'environment'
-          }
+            facingMode: 'environment',
+            width: window.innerWidth,  // Ajusta la resolución del video
+            height: window.innerHeight, // Ajusta la resolución del video
+            aspectRatio: { min: 1, max: 100 }
+          },
+          singleChannel: false // Habilita color para mejorar la detección
         },
         decoder: {
-          readers: ['ean_reader']
+          readers: ['ean_reader'],
+          multiple: false // Escanea solo un código a la vez
+        },
+        locate: true, // Permite localizar códigos en el cuadro
+        locator: {
+          halfSample: true,
+          patchSize: 'medium' // Ajusta el tamaño de los parches de imagen
         }
       },
       (err) => {
@@ -101,13 +113,25 @@ const AdminPage = () => {
           return;
         }
         Quagga.start();
+
+        // Configura un tiempo límite para detener el escaneo después de 10 segundos
+        scanTimeoutRef.current = setTimeout(() => {
+          Quagga.stop();
+          setShowScanner(false);
+          console.warn('Escaneo detenido por tiempo límite.');
+        }, 10000); // 10 segundos
       }
     );
 
     Quagga.onDetected((result) => {
-      setEan(result.codeResult.code);
-      Quagga.stop();
-      setShowScanner(false);
+      if (result.codeResult && result.codeResult.code) {
+        setEan(result.codeResult.code);
+        Quagga.stop();
+        setShowScanner(false);
+
+        // Cancela el timeout si el escaneo fue exitoso antes del tiempo límite
+        clearTimeout(scanTimeoutRef.current);
+      }
     });
   };
 
@@ -186,11 +210,11 @@ const AdminPage = () => {
         </thead>
         <tbody>
           {products.map((product) => {
-            console.log('Product:', product); // Verifica la estructura de cada producto
+            console.log('Product:', product);
             return (
               <tr key={product._id}>
                 <td>{product.ean}</td>
-                <td>{product.description}</td> {/* Asegúrate de que 'description' esté presente */}
+                <td>{product.description}</td>
                 <td>${product.price.toFixed(2)}</td>
                 <td>{product.stock}</td>
                 <td>

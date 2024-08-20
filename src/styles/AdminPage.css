@@ -204,12 +204,23 @@
         width: 80%; /* Botones ocupan el ancho completo */
     }
     .scanner {
-        width: 100%; /* Asegúrate de que ocupe el 100% del ancho en pantallas pequeñas */
-        max-width: none; /* Desactiva el límite de tamaño máximo */
-        height: auto; /* Ajusta la altura automáticamente */
-        /* Mantiene la posición relativa para el escáner */
-        overflow: hidden;
+        width: 100%;
+        height: 500px;
+        position: relative;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        background-color: rgba(0, 0, 0, 0.75);
+        padding: auto;
     }
+    .scanner video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Esto hace que el video se ajuste al contenedor */
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
    
     
 }
