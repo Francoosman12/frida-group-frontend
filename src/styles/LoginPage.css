@@ -9,6 +9,11 @@
     background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
     font-family: 'Arial', sans-serif;
   }
+
+  .success-message {
+    color: green;
+    margin-top: 10px;
+  }
   
   /* Panel de formulario que contiene tanto login como registro */
   .auth-form-panel {
