@@ -52,7 +52,7 @@ const Navbar = () => {
               <button className="btn btn-outline-light" onClick={handleLogout}>Cerrar sesión</button>
             </div>
           ) : (
-            <Link className="btn btn-outline-light" to="/login">Iniciar sesión</Link>
+            <Link className="btn btn-outline-light" to="/">Iniciar sesión</Link>
           )}
         </div>
       </div>

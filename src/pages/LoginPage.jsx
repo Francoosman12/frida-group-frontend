@@ -24,12 +24,8 @@ const LoginPage = () => {
         login(token, role, name);
         // Aquí puedes redirigir o hacer cualquier otra acción
       } catch (error) {
-        // Asegúrate de que error.response.data sea una cadena o manipúlalo adecuadamente
-        const errorMessage = error.response && typeof error.response.data === 'string'
-          ? error.response.data
-          : 'Error al iniciar sesión';
-        setError(errorMessage);
-        console.error('Error al iniciar sesión:', errorMessage);
+        setError(error.response ? error.response.data : 'Error al iniciar sesión');
+        console.error('Error al iniciar sesión:', error.response ? error.response.data : error.message);
       }
     } else {
       if (password !== confirmPassword) {
@@ -49,12 +45,8 @@ const LoginPage = () => {
           setSuccessMessage('');
         }, 3000);
       } catch (error) {
-        // Asegúrate de que error.response.data sea una cadena o manipúlalo adecuadamente
-        const errorMessage = error.response && typeof error.response.data === 'string'
-          ? error.response.data
-          : 'Error al registrarse';
-        setError(errorMessage);
-        console.error('Error al registrarse:', errorMessage);
+        setError(error.response ? error.response.data : 'Error al registrarse');
+        console.error('Error al registrarse:', error.response ? error.response.data : error.message);
       }
     }
   };
