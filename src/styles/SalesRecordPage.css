@@ -63,55 +63,92 @@
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-.boton-filtrar:hover{
-background-color: green;
-border: 0 solid;
-color: white;
-}
-.boton-descargar:hover{
-background-color: red;
-border: solid 0;
-color: white;
+
+.boton-filtrar:hover {
+    background-color: green;
+    border: 0 solid;
+    color: white;
 }
 
-.pagination{
-    padding: 15px;
+.boton-descargar:hover {
+    background-color: red;
+    border: solid 0;
+    color: white;
 }
-.pagination-button{
-    background-color: #F4F4F4;
+
+.boton-exportar:hover {
+    background-color: red;
+    border: solid 0;
+    color: white;
 }
-.pagination button:hover{
-background-color: #333333;
-border: solid 0;
-color: white;
+
+/* SalesRecordPage.css */
+
+/* Estilo para los botones de paginación */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 }
+
+.page-button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.page-button.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.page-button:hover {
+    background-color: #ddd;
+}
+
+
 /* Media queries para hacer la página responsive */
 
 /* Pantallas medianas y pequeñas */
 @media (max-width: 1024px) {
     .page-title {
-        font-size: 1.5rem; /* Reducir el tamaño del título en pantallas medianas */
+        font-size: 1.5rem;
+        /* Reducir el tamaño del título en pantallas medianas */
+    }
+
+    .sales-record-page {
+        padding: 0 10px;
+
+        margin: 0 auto;
     }
 }
 
 /* Pantallas pequeñas (tablets y móviles) */
 @media (max-width: 768px) {
     .sales-record-table {
-        font-size: 0.8rem; /* Reducir el tamaño de la fuente en la tabla */
+        font-size: 0.8rem;
+        /* Reducir el tamaño de la fuente en la tabla */
+
     }
 
     .sales-record-table th,
     .sales-record-table td {
-        padding: 8px; /* Reducir el padding en la tabla */
+        padding: 8px;
+        /* Reducir el padding en la tabla */
     }
-    
+
     .sales-record-table th {
-        font-size: 0.9rem; /* Reducir el tamaño de la fuente en los encabezados */
+        font-size: 0.9rem;
+        /* Reducir el tamaño de la fuente en los encabezados */
     }
 
     .sales-record-table td {
-        font-size: 0.8rem; /* Reducir el tamaño de la fuente en las celdas */
+        font-size: 0.8rem;
+        /* Reducir el tamaño de la fuente en las celdas */
     }
+
     .filter-container {
         flex-direction: column;
         align-items: flex-start;
@@ -120,29 +157,42 @@ color: white;
     .filter-container input[type="date"] {
         width: 100%;
     }
+
+    .page-button {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        padding: 5px;
+        margin: 0 5px;
+        cursor: pointer;
+    }
 }
 
 /* Pantallas extra pequeñas (móviles) */
 @media (max-width: 480px) {
     .sales-record-page {
         padding: 0;
-    
-    .page-title {
-        font-size: 1.2rem; /* Reducir aún más el tamaño del título */
-    }
 
-    .sales-record-table th,
-    .sales-record-table td {
-      /* Convertir las celdas de la tabla en bloques para dispositivos muy pequeños */
-        width: 100%; /* Hacer que las celdas ocupen el ancho completo */
-        box-sizing: border-box; /* Asegurarse de que el padding no haga que las celdas se desborden */
-        font-size: 10px;
-    }
-    
-    .sales-record-table th,
-    .sales-record-table td {
-        padding: 3px; /* Aumentar el padding para una mejor legibilidad en dispositivos muy pequeños */
-        text-align: left; /* Alinear el texto a la izquierda en lugar de centrado */
-    }
+        .page-title {
+            font-size: 1.2rem;
+            /* Reducir aún más el tamaño del título */
+        }
+
+        .sales-record-table th,
+        .sales-record-table td {
+            /* Convertir las celdas de la tabla en bloques para dispositivos muy pequeños */
+            width: 100%;
+            /* Hacer que las celdas ocupen el ancho completo */
+            box-sizing: border-box;
+            /* Asegurarse de que el padding no haga que las celdas se desborden */
+            font-size: 8px;
+        }
+
+        .sales-record-table th,
+        .sales-record-table td {
+            padding: 3px;
+            /* Aumentar el padding para una mejor legibilidad en dispositivos muy pequeños */
+            text-align: left;
+            /* Alinear el texto a la izquierda en lugar de centrado */
+        }
     }
 }

@@ -1,0 +1,102 @@
+/* src/pages/LoginPage.css */
+
+/* Contenedor principal para la página de inicio de sesión y registro */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+  font-family: 'Arial', sans-serif;
+}
+
+.success-message {
+  color: green;
+  margin-top: 10px;
+}
+
+/* Panel de formulario que contiene tanto login como registro */
+.auth-form-panel {
+  background-color: #ffffff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 450px;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Encabezados de los formularios */
+.auth-form-panel h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Estilo para los inputs */
+.auth-form-panel input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.auth-form-panel input:focus {
+  border-color: #74ebd5;
+}
+
+/* Estilo para los botones */
+.auth-form-panel button {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  background-color: #0D6EFD;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.auth-form-panel button:hover {
+  background-color: #0DCAF0;
+}
+
+/* Estilo para los enlaces */
+.auth-form-panel a {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease-in-out;
+}
+
+.auth-form-panel a:hover {
+  color: #ACB6E5;
+}
+
+/* Botón de alternancia entre login y registro */
+.toggle-button {
+  background: none;
+  border: none;
+  color: #74ebd5;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  text-align: center;
+  width: 100%;
+  transition: color 0.3s ease-in-out;
+}
+
+.toggle-button:hover {
+  color: white;
+}

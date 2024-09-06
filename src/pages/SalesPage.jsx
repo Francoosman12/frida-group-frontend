@@ -26,7 +26,7 @@ const SalesPage = () => {
     if (debouncedEan.length >= 8) {
       const fetchProduct = async () => {
         try {
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/products/search?ean=${debouncedEan}`);
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/search?ean=${debouncedEan}`);
           setProduct(response.data || null);
           setError(response.data ? '' : 'Producto no encontrado');
           setOutOfStockError('');
@@ -65,7 +65,7 @@ const SalesPage = () => {
     if (cart.length > 0) {
       try {
         const saleRequests = cart.map((item) => {
-          return axios.post(`${import.meta.env.VITE_API_URL}/sales`, {
+          return axios.post(`${import.meta.env.VITE_API_URL}/api/sales`, {
             ean: item.ean,
             quantity: item.quantity,
             price: item.price,
