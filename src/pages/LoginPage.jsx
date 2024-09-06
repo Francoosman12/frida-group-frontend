@@ -13,12 +13,15 @@ const LoginPage = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const { login } = useAuth();
 
+  // Obtén la URL de la API desde la variable de entorno
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isLogin) {
       try {
-        const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+        const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
         console.log('Inicio de sesión exitoso:', response.data);
         const { token, role, name } = response.data;
         login(token, role, name);
@@ -34,7 +37,7 @@ const LoginPage = () => {
       }
 
       try {
-        const response = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+        const response = await axios.post(`${API_URL}/api/auth/register`, { name, email, password });
         console.log('Registro exitoso:', response.data);
         setSuccessMessage('Registro exitoso. Redirigiendo al inicio de sesión...');
         setError('');
