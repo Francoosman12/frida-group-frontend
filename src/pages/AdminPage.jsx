@@ -16,7 +16,7 @@ const AdminPage = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/products`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products`);
       console.log('Fetched Products:', response.data); // Verifica la estructura de los datos obtenidos
       setProducts(response.data);
     } catch (err) {
@@ -33,7 +33,7 @@ const AdminPage = () => {
     e.preventDefault();
     try {
       if (editProductId) {
-        await axios.put(`${import.meta.env.VITE_API_URL}/products/${editProductId}`, {
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/products/${editProductId}`, {
           ean,
           description,
           price: parseFloat(price),
@@ -41,7 +41,7 @@ const AdminPage = () => {
         });
         setEditProductId(null);
       } else {
-        await axios.post(`${import.meta.env.VITE_API_URL}/products`, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/products`, {
           ean,
           description,
           price: parseFloat(price),
