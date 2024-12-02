@@ -20,7 +20,8 @@ const Navbar = () => {
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid d-flex justify-content-between">
         <Link className="container-logo animate__animated animate__flipInX animate__delay-1s" to="/">
-          <img src="src/assets/urraca.png" className='urraca-logo' alt="" />
+          <img src="" className='urraca-logo' alt="" />
+          <h3>Frida - Group</h3>
         </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
