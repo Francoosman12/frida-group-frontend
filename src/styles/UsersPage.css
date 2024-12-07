@@ -1,0 +1,81 @@
+/* SalesPage.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.product-details {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.product-info p {
+  margin: 5px 0;
+}
+
+.price-highlight {
+  color: green;
+  font-weight: bold;
+}
+
+.thumbnail {
+  width: 80px;
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.cart-container {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.cart-table th,
+.cart-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.edit-button,
+.delete-button,
+.register-button {
+  padding: 5px 10px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.edit-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.delete-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.register-button {
+  background-color: #008CBA;
+  color: white;
+}
+
+.register-button:hover,
+.edit-button:hover,
+.delete-button:hover {
+  opacity: 0.8;
+}

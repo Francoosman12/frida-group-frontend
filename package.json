@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@zxing/library": "^0.21.2",
+    "@zxing/library": "^0.21.3",
     "animate.css": "^4.1.1",
     "axios": "^1.7.3",
     "bootstrap": "^5.3.3",
@@ -20,6 +20,7 @@
     "react": "^18.3.1",
     "react-barcode-reader": "^0.0.2",
     "react-dom": "^18.3.1",
+    "react-qr-reader": "^3.0.0-beta-1",
     "react-router-dom": "^6.26.0",
     "react-webcam": "^7.2.0",
     "xlsx": "^0.18.5"

@@ -1,45 +1,42 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useSales } from '../context/SalesContext';
+import { BrowserMultiFormatReader } from '@zxing/library'; // Asegúrate de tener la librería instalada
 import '../styles/SalesPage.css';
 
 const SalesPage = () => {
-  const { addSale } = useSales();
   const [ean, setEan] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState(null);
   const [error, setError] = useState('');
   const [outOfStockError, setOutOfStockError] = useState('');
   const [cart, setCart] = useState([]);
-  const [debouncedEan, setDebouncedEan] = useState(ean);
-  const barcodeInputRef = useRef(null);
+  const [showQrReader, setShowQrReader] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
+  const videoRef = useRef(null);
+  const codeReader = useRef(null);
+
+  // Fetch product details from the API
+  const fetchProduct = async (ean) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/products/search?ean=${ean}`
+      );
+      setProduct(response.data || null);
+      setError(response.data ? '' : 'Producto no encontrado');
+      setOutOfStockError('');
+    } catch (err) {
+      setError('Error al buscar producto');
+    }
+  };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedEan(ean);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [ean]);
-
-  useEffect(() => {
-    if (debouncedEan.length >= 8) {
-      const fetchProduct = async () => {
-        try {
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/search?ean=${debouncedEan}`);
-          setProduct(response.data || null);
-          setError(response.data ? '' : 'Producto no encontrado');
-          setOutOfStockError('');
-        } catch (err) {
-          setError('Error al buscar producto');
-        }
-      };
-      fetchProduct();
+    if (ean.length >= 8) {
+      fetchProduct(ean);
     } else {
       setProduct(null);
       setError('');
     }
-  }, [debouncedEan]);
+  }, [ean]);
 
   const handleAddToCart = () => {
     if (product) {
@@ -53,11 +50,14 @@ const SalesPage = () => {
         quantity,
       };
 
-      setCart([...cart, cartItem]);
-      setProduct(null);
+      setCart((prevCart) => [...prevCart, cartItem]);
+
+      // Limpiar campos después de agregar al carrito
       setEan('');
       setQuantity(1);
+      setProduct(null);
       setOutOfStockError('');
+      setError('');
     }
   };
 
@@ -74,14 +74,7 @@ const SalesPage = () => {
 
         await Promise.all(saleRequests);
 
-        // Añadir ventas al contexto (si es necesario)
-        cart.forEach((item) => {
-          addSale({
-            ...item,
-            date: new Date().toISOString(),
-          });
-        });
-
+        // Limpiar el carrito y otros estados después de registrar la venta
         setCart([]);
         setProduct(null);
         setEan('');
@@ -95,53 +88,118 @@ const SalesPage = () => {
     }
   };
 
-  const handleQuantityChange = (index, increment) => {
-    const updatedCart = cart.map((item, i) => {
-      if (i === index) {
-        const newQuantity = item.quantity + increment;
-        if (newQuantity > 0 && newQuantity <= item.stock) {
-          return { ...item, quantity: newQuantity };
-        }
-      }
-      return item;
-    });
-    setCart(updatedCart);
-  };
+  const handleQrScanResult = (result, error) => {
+    if (result && !isScanning) {
+      setIsScanning(true);
+      const scannedEan = result?.getText() || '';
+      setEan(scannedEan);
+      fetchProduct(scannedEan).finally(() => {
+        setIsScanning(false);
+        // Limpiar el campo EAN después de escanear y encontrar el producto
+        setEan('');
+      });
+    }
 
-  const handleRemoveFromCart = (index) => {
-    setCart(cart.filter((_, i) => i !== index));
-  };
-
-  const totalAmount = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-
-  const handleBarcodeScan = (e) => {
-    if (e.key === 'Enter') {  // Asume que el lector de código de barras envía un "Enter" después del código
-      e.preventDefault();
-      const scannedEAN = barcodeInputRef.current.value.trim();
-      if (scannedEAN) {
-        setEan(scannedEAN);
-        barcodeInputRef.current.value = ''; // Limpiar el campo después de procesar
-      }
+    if (error) {
+      console.error('Error al escanear QR:', error);
     }
   };
 
-  useEffect(() => {
-    // Agrega un listener para el evento de teclado cuando el componente se monta
-    const handleKeyDown = (e) => {
-      if (barcodeInputRef.current) {
-        barcodeInputRef.current.value += e.key;
-        if (e.key === 'Enter') {
-          handleBarcodeScan(e);
-        }
+  const toggleQrReader = () => {
+    // Al cerrar el escáner, asegurarse de que se reinicie el estado de escaneo
+    setShowQrReader(!showQrReader);
+    if (showQrReader) {
+      stopQrScanner();
+    }
+  };
+
+  const startQrScanner = async () => {
+    try {
+      if (!videoRef.current) {
+        console.error('El elemento <video> no está disponible.');
+        return;
       }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+
+      // Crear el lector de código QR
+      codeReader.current = new BrowserMultiFormatReader();
+
+      // Solicitar acceso a la cámara
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+      // Asignar el flujo de video al elemento <video>
+      videoRef.current.srcObject = stream;
+      await videoRef.current.play(); // Inicia la reproducción del video
+
+      // Configurar el lector de códigos QR
+      codeReader.current.decodeFromVideoDevice(
+        null,
+        videoRef.current,
+        (result, error) => {
+          if (result) {
+            const scannedEan = result.getText();
+            console.log('Código escaneado:', scannedEan);
+            setEan(scannedEan);
+            fetchProduct(scannedEan);
+            stopQrScanner(); // Detener el escáner después de leer un código
+          } else if (error && error.message !== 'No MultiFormat Readers were able to detect the code.') {
+            console.warn('Error al escanear QR:', error.message || error);
+          }
+        }
+      );
+    } catch (err) {
+      console.error('Error al iniciar la cámara:', err.message || err);
+      setError('No se pudo acceder a la cámara. Verifique los permisos.');
+    }
+  };
+
+  const stopQrScanner = () => {
+    if (codeReader.current) {
+      codeReader.current.reset();
+    }
+
+    if (videoRef.current) {
+      const stream = videoRef.current.srcObject;
+      const tracks = stream?.getTracks();
+      tracks?.forEach((track) => track.stop());
+      videoRef.current.srcObject = null;
+    }
+  };
+
+  const handleRemoveItemFromCart = (index) => {
+    const updatedCart = cart.filter((_, i) => i !== index);
+    setCart(updatedCart);
+  };
+
+  const handleIncreaseQuantity = (index) => {
+    const updatedCart = [...cart];
+    updatedCart[index].quantity += 1;
+    setCart(updatedCart);
+  };
+
+  const handleDecreaseQuantity = (index) => {
+    const updatedCart = [...cart];
+    if (updatedCart[index].quantity > 1) {
+      updatedCart[index].quantity -= 1;
+    }
+    setCart(updatedCart);
+  };
+
+  const getTotalPrice = () => {
+    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+  };
+
+  useEffect(() => {
+    if (showQrReader) {
+      startQrScanner();
+    } else {
+      stopQrScanner();
+    }
+  }, [showQrReader]);
 
   return (
     <div className="sales-page">
       <h1 className="page-title">Ventas</h1>
+
       <div className="search-container col-xl-12 d-sm-flex justify-content-center">
         <div className="form-container col-xl-6">
           <label>Ingrese el código EAN:</label>
@@ -152,6 +210,14 @@ const SalesPage = () => {
             placeholder="Ingrese el código EAN"
             className="input-field"
           />
+          <button onClick={toggleQrReader} className="qr-button">
+            {showQrReader ? 'Cerrar Cámara' : 'Escanear QR'}
+          </button>
+          {showQrReader && (
+            <div className="qr-reader-container">
+              <video ref={videoRef} style={{ width: '100%' }} />
+            </div>
+          )}
           <label>Ingrese la cantidad:</label>
           <input
             type="number"
@@ -161,22 +227,40 @@ const SalesPage = () => {
             className="input-field"
             placeholder="Cantidad"
           />
-          <button onClick={handleAddToCart} className="register-button">Agregar al carrito</button>
+          <button onClick={handleAddToCart} className="register-button">
+            Agregar al carrito
+          </button>
         </div>
         {product && (
           <div className="product-details col-xl-6">
             <h2>Detalles del Producto</h2>
             <div className="product-info">
-              <p><strong>Descripción:</strong> {product.description}</p>
-              <p><strong>Stock:</strong> {product.stock}</p>
-              <p><strong>Precio:</strong> <span className="price-highlight">${product.price.toFixed(2)}</span></p>
+              <img
+                src={product.image}
+                alt="Imagen del producto"
+                className="image-product cover"
+              />
+              <p>
+                <strong>Descripción:</strong> {product.description}
+              </p>
+              <p>
+                <strong>Stock:</strong> {product.stock}
+              </p>
+              <p>
+                <strong>Precio:</strong>{' '}
+                <span className="price-highlight">
+                  ${product.price.toFixed(2)}
+                </span>
+              </p>
             </div>
           </div>
         )}
       </div>
+
       {error && <p className="error-message">{error}</p>}
       {outOfStockError && <p className="error-message">{outOfStockError}</p>}
-      <div className="cart-list">
+
+      <div className="cart-list mt-4">
         <h2>Carrito de Ventas</h2>
         <table className="cart-table">
           <thead>
@@ -193,31 +277,37 @@ const SalesPage = () => {
               <tr key={index}>
                 <td>{item.description}</td>
                 <td>
-                  <button onClick={() => handleQuantityChange(index, -1)} className="quantity-button">-</button>
-                  <span className="quantity-value">{item.quantity}</span>
-                  <button onClick={() => handleQuantityChange(index, 1)} className="quantity-button">+</button>
+                  <button onClick={() => handleDecreaseQuantity(index)}>-</button>
+                  {item.quantity}
+                  <button onClick={() => handleIncreaseQuantity(index)}>+</button>
                 </td>
                 <td>${item.price.toFixed(2)}</td>
                 <td>${(item.price * item.quantity).toFixed(2)}</td>
                 <td>
-                  <button onClick={() => handleRemoveFromCart(index)} className="remove-button">🗑️</button>
+                  <button
+                    onClick={() => handleRemoveItemFromCart(index)}
+                    className="remove-button"
+                  >
+                    🗑️
+                  </button>
                 </td>
               </tr>
             ))}
             <tr>
-              <td colSpan="3"><strong>Total</strong></td>
-              <td><strong>${totalAmount.toFixed(2)}</strong></td>
+              <td colSpan="3">
+                <strong>Total</strong>
+              </td>
+              <td>
+                <strong>${getTotalPrice()}</strong>
+              </td>
               <td></td>
             </tr>
           </tbody>
         </table>
-        <button onClick={handleRegisterSale} className="register-button">Registrar venta</button>
+        <button onClick={handleRegisterSale} className="register-sale-button mt-4">
+          Registrar Venta
+        </button>
       </div>
-      <input
-        type="text"
-        ref={barcodeInputRef}
-        style={{ position: 'absolute', top: '-100px', left: '-100px' }} // Ocultar el input
-      />
     </div>
   );
 };
