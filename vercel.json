@@ -2,7 +2,7 @@
     "build": {
       "env": {
         "NPM_FLAGS": "--legacy-peer-deps",
-        "API_URL": "https://frida-group-backend-bccgkyx44-francoosman12s-projects.vercel.app"
+        "API_URL": "https://frida-group-backend.vercel.app"
       }
     }
   }

@@ -100,7 +100,7 @@ const SalesPage = () => {
       codeReader.current = new BrowserMultiFormatReader();
 
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' }, // Solicita la cámara trasera
+        video: { facingMode: { ideal: 'environment' } }, // Solicitar cámara trasera
       });
 
       videoRef.current.srcObject = stream;
