@@ -175,6 +175,8 @@ const SalesPage = () => {
     <div className="sales-page">
       <h1 className="page-title">Ventas</h1>
 
+      <a className='asistencia' href="https://docs.google.com/forms/d/e/1FAIpQLSf59xrxxfsxmnoB47-5uJnnI6uzsT04V1t57Vb2G9czpJhwaA/viewform">Ingrese aquí su asistencia</a>
+
       <div className="search-container col-xl-12 d-sm-flex justify-content-center">
         <div className="form-container col-xl-6">
           <label>Ingrese el código EAN:</label>

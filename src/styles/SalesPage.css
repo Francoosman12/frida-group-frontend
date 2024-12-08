@@ -205,20 +205,27 @@
 
 @media (max-width: 450px) {
     .sales-page {
-        padding: 0 5px;
+        padding: 0px;
+        margin: 0px;
     }
 
     .form-container {
         padding: 10px;
     }
 
+    .cart-list {
+        
+        padding: 0px;
+        
+    }
+
     .cart-table {
-        font-size: 12px;
+        font-size: 6px;
     }
 
     .cart-table th,
     .cart-table td {
-        padding: 3px;
+        padding: 1px;
     }
 
     .image-product {
@@ -228,7 +235,7 @@
     .quantity-button {
         padding: 2px 8px;
         margin: 5px;
-        font-size: 14px;
+        font-size: 10px;
         border: none;
         background-color: #007bff;
         color: white;

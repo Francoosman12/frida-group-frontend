@@ -99,7 +99,7 @@
 .edit-button {
     background-color: #28a745;
     color: white;
-    margin: 5px;
+    margin: 2px;
 }
 
 .edit-button:hover {
@@ -109,7 +109,7 @@
 .delete-button {
     background-color: #dc3545;
     color: white;
-    margin: 5px;
+    margin: 2px;
 }
 
 .delete-button:hover {
@@ -118,8 +118,8 @@
 
 /* Miniaturas de imágenes */
 .thumbnail {
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
     object-fit: cover;
     cursor: pointer;
 }
@@ -148,6 +148,7 @@
 @media (max-width: 767px) {
     .admin-page {
         padding: 0; /* Menor padding en móviles */
+        margin: 0px;
     }
 
     .product-form {
@@ -176,5 +177,11 @@
 
     .edit-button, .delete-button {
         width: 80%; /* Botones ocupan ancho reducido */
+    }
+    .thumbnail {
+        width: 20px;
+        height: 20px;
+        object-fit: cover;
+        cursor: pointer;
     }
 }
