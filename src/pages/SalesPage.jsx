@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { BrowserMultiFormatReader } from '@zxing/library'; // Asegúrate de tener la librería instalada
+import { BrowserMultiFormatReader } from '@zxing/library';
 import '../styles/SalesPage.css';
 
 const SalesPage = () => {
@@ -15,12 +15,9 @@ const SalesPage = () => {
   const videoRef = useRef(null);
   const codeReader = useRef(null);
 
-  // Fetch product details from the API
   const fetchProduct = async (ean) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/products/search?ean=${ean}`
-      );
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/search?ean=${ean}`);
       setProduct(response.data || null);
       setError(response.data ? '' : 'Producto no encontrado');
       setOutOfStockError('');
@@ -52,7 +49,6 @@ const SalesPage = () => {
 
       setCart((prevCart) => [...prevCart, cartItem]);
 
-      // Limpiar campos después de agregar al carrito
       setEan('');
       setQuantity(1);
       setProduct(null);
@@ -74,7 +70,6 @@ const SalesPage = () => {
 
         await Promise.all(saleRequests);
 
-        // Limpiar el carrito y otros estados después de registrar la venta
         setCart([]);
         setProduct(null);
         setEan('');
@@ -88,25 +83,7 @@ const SalesPage = () => {
     }
   };
 
-  const handleQrScanResult = (result, error) => {
-    if (result && !isScanning) {
-      setIsScanning(true);
-      const scannedEan = result?.getText() || '';
-      setEan(scannedEan);
-      fetchProduct(scannedEan).finally(() => {
-        setIsScanning(false);
-        // Limpiar el campo EAN después de escanear y encontrar el producto
-        setEan('');
-      });
-    }
-
-    if (error) {
-      console.error('Error al escanear QR:', error);
-    }
-  };
-
   const toggleQrReader = () => {
-    // Al cerrar el escáner, asegurarse de que se reinicie el estado de escaneo
     setShowQrReader(!showQrReader);
     if (showQrReader) {
       stopQrScanner();
@@ -120,17 +97,15 @@ const SalesPage = () => {
         return;
       }
 
-      // Crear el lector de código QR
       codeReader.current = new BrowserMultiFormatReader();
 
-      // Solicitar acceso a la cámara
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }, // Solicita la cámara trasera
+      });
 
-      // Asignar el flujo de video al elemento <video>
       videoRef.current.srcObject = stream;
-      await videoRef.current.play(); // Inicia la reproducción del video
+      await videoRef.current.play();
 
-      // Configurar el lector de códigos QR
       codeReader.current.decodeFromVideoDevice(
         null,
         videoRef.current,
@@ -140,7 +115,7 @@ const SalesPage = () => {
             console.log('Código escaneado:', scannedEan);
             setEan(scannedEan);
             fetchProduct(scannedEan);
-            stopQrScanner(); // Detener el escáner después de leer un código
+            stopQrScanner();
           } else if (error && error.message !== 'No MultiFormat Readers were able to detect the code.') {
             console.warn('Error al escanear QR:', error.message || error);
           }

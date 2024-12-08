@@ -31,12 +31,14 @@ const AdminPage = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append('ean', ean);
+      if (editProductId && ean) {
+        formData.append('ean', ean); // Solo incluir el EAN en modo de edición
+      }
       formData.append('description', description);
       formData.append('price', parseFloat(price));
       formData.append('stock', parseInt(stock, 10));
       if (image) formData.append('image', image);
-
+  
       if (editProductId) {
         await axios.put(`${import.meta.env.VITE_API_URL}/api/products/${editProductId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -47,7 +49,7 @@ const AdminPage = () => {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       }
-
+  
       setEan('');
       setDescription('');
       setPrice('');
@@ -56,11 +58,11 @@ const AdminPage = () => {
       setError('');
       fetchProducts();
     } catch (err) {
-      console.error('Error handling product:', err);
-      setError('Error handling product');
+      console.error('Error handling product:', err.response?.data || err.message);
+      setError(err.response?.data?.message || 'Error handling product');
     }
   };
-
+  
   const handleEdit = (product) => {
     setEan(product.ean);
     setDescription(product.description);
@@ -101,7 +103,6 @@ const AdminPage = () => {
             type="text"
             value={ean}
             onChange={(e) => setEan(e.target.value)}
-            required
             className="form-input"
           />
         </div>
