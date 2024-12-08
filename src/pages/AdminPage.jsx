@@ -31,25 +31,31 @@ const AdminPage = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      if (editProductId && ean) {
+
+      // No enviar el EAN si es un nuevo producto
+      if (editProductId) {
         formData.append('ean', ean); // Solo incluir el EAN en modo de edición
       }
+
       formData.append('description', description);
       formData.append('price', parseFloat(price));
       formData.append('stock', parseInt(stock, 10));
       if (image) formData.append('image', image);
   
       if (editProductId) {
+        // Si estamos editando un producto
         await axios.put(`${import.meta.env.VITE_API_URL}/api/products/${editProductId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         setEditProductId(null);
       } else {
+        // Si estamos creando un nuevo producto
         await axios.post(`${import.meta.env.VITE_API_URL}/api/products`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       }
   
+      // Limpiar el formulario y hacer una nueva solicitud para actualizar la lista de productos
       setEan('');
       setDescription('');
       setPrice('');
@@ -62,9 +68,9 @@ const AdminPage = () => {
       setError(err.response?.data?.message || 'Error handling product');
     }
   };
-  
+
   const handleEdit = (product) => {
-    setEan(product.ean);
+    setEan(product.ean); // Solo se muestra el EAN al editar
     setDescription(product.description);
     setPrice(product.price);
     setStock(product.stock);
@@ -104,6 +110,7 @@ const AdminPage = () => {
             value={ean}
             onChange={(e) => setEan(e.target.value)}
             className="form-input"
+            disabled={editProductId !== null} // Desactivar campo EAN si estamos editando
           />
         </div>
         <div className="form-group">
