@@ -25,26 +25,24 @@ const UsersPage = () => {
     }
   }, [role, navigate]);
 
-// Obtener los usuarios registrados
-useEffect(() => {
-  const fetchUsers = async () => {
-    try {
-      const token = localStorage.getItem('token'); // O de otra fuente según tu autenticación
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Asegúrate de pasar el token aquí
-        },
-      });
-      setUsers(response.data);
-    } catch (error) {
-      setMessage('Error al obtener los usuarios');
-    }
-  };
-  
+  // Obtener los usuarios registrados
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const token = localStorage.getItem('token'); // O de otra fuente según tu autenticación
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Asegúrate de pasar el token aquí
+          },
+        });
+        setUsers(response.data);
+      } catch (error) {
+        setMessage('Error al obtener los usuarios');
+      }
+    };
 
-  fetchUsers();
-}, []);
-
+    fetchUsers();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,44 +72,46 @@ useEffect(() => {
     }
   };
 
- 
-
   return (
-    <div>
-      <h2>Registrar Nuevo Usuario</h2>
-      {message && <p>{message}</p>}
+    <div className="users-page-container">
+      <h2 className="users-page-title">Registrar Nuevo Usuario</h2>
+      {message && <p className="message">{message}</p>}
       {role === 'admin' && (
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Nombre</label>
+        <form onSubmit={handleSubmit} className="user-form">
+          <div className="input-group">
+            <label className="input-label">Nombre</label>
             <input
+              className="input-field"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
-          <div>
-            <label>Email</label>
+          <div className="input-group">
+            <label className="input-label">Email</label>
             <input
+              className="input-field"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
-          <div>
-            <label>Contraseña</label>
+          <div className="input-group">
+            <label className="input-label">Contraseña</label>
             <input
+              className="input-field"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
-          <div>
-            <label>Rol</label>
+          <div className="input-group">
+            <label className="input-label">Rol</label>
             <select
+              className="input-field"
               value={roleSelect}
               onChange={(e) => setRoleSelect(e.target.value)}
             >
@@ -119,41 +119,40 @@ useEffect(() => {
               <option value="admin">Administrador</option>
             </select>
           </div>
-          <button type="submit">Registrar</button>
+          <button className="submit-button" type="submit">Registrar</button>
         </form>
       )}
 
       {/* Tabla de usuarios */}
-{role === 'admin' && (
-  <div className="users-page">
-    <h2 className="page-title">Usuarios Registrados</h2>
-    <table className="users-table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Email</th>
-          <th>Rol</th>
-        </tr>
-      </thead>
-      <tbody>
-        {users.length > 0 ? (
-          users.map((user) => (
-            <tr key={user._id}>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="4">No hay usuarios registrados</td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-  </div>
-)}
-
+      {role === 'admin' && (
+        <div className="users-table-container">
+          <h2 className="users-table-title">Usuarios Registrados</h2>
+          <table className="users-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.length > 0 ? (
+                users.map((user) => (
+                  <tr key={user._id}>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>{user.role}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3">No hay usuarios registrados</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
