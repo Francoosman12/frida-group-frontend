@@ -4,6 +4,13 @@
         "NPM_FLAGS": "--legacy-peer-deps",
         "API_URL": "https://frida-group-backend.vercel.app"
       }
+    },
+    "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
+  ]
   }
   
+    
