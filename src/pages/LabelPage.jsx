@@ -155,7 +155,7 @@ const LabelPage = () => {
   
   return (
     <div className="label-page">
-      <h1>Generar Etiquetas de Productos</h1>
+      <h1>Etiquetas de Productos</h1>
       {error && <p>{error}</p>}
 
       {/* Vista previa de las etiquetas */}
