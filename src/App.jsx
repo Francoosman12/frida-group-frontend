@@ -5,7 +5,8 @@ import AdminPage from './pages/AdminPage';
 import SalesPage from './pages/SalesPage';
 import SalesRecordPage from './pages/SalesRecordPage';
 import LoginPage from './pages/LoginPage';
-import UsersPage from './pages/UsersPage'; // Importa la nueva página
+import UsersPage from './pages/UsersPage'; // Página de usuarios
+import LabelPage from './pages/LabelPage'; // Nueva página para generar etiquetas
 import { SalesProvider } from './context/SalesContext';
 import { AuthProvider, useAuth } from './context/AuthContext'; // Asegúrate de importar useAuth
 import Navbar from './components/Navbar';
@@ -62,7 +63,16 @@ function App() {
                 path="/user-page"
                 element={
                   <AdminRoute>
-                    <UsersPage /> {/* Nueva página */}
+                    <UsersPage /> {/* Página de usuarios */}
+                  </AdminRoute>
+                }
+              />
+              {/* Ruta para la nueva página de etiquetas */}
+              <Route
+                path="/label-page"
+                element={
+                  <AdminRoute>
+                    <LabelPage /> {/* Página de etiquetas */}
                   </AdminRoute>
                 }
               />

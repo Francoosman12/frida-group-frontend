@@ -1,0 +1,52 @@
+.label-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center; /* Centrar las etiquetas en pantallas grandes */
+  }
+  
+  .label {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 200px;
+    text-align: center;
+    box-sizing: border-box; /* Asegurarse de que el padding no afecte el tamaño total */
+  }
+  
+  .qr-code img, .product-image img {
+    width: 100px;
+    height: 100px;
+    margin-top: 10px;
+  }
+  
+  .product-image img {
+    max-width: 100%; /* Asegurarse de que la imagen del producto sea responsive */
+    height: auto;
+  }
+  
+  button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Reglas para impresión */
+  @media print {
+    button {
+      display: none; /* Ocultar el botón de impresión cuando se imprime */
+    }
+  
+    /* Asegurarse de que todo el contenido que no quieres que se imprima esté oculto */
+    .label-page {
+      display: none; /* Si quieres ocultar toda la página cuando se imprime */
+    }
+  }
+  

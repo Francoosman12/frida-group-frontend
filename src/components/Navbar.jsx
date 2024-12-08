@@ -52,6 +52,9 @@ const Navbar = () => {
                     <li className="nav-item">
                       <Link className="nav-link" to="/user-page">Usuarios</Link>
                     </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/label-page">Etiquetas</Link>
+                    </li>
                   </>
                 )}
                 {role === 'vendedor' && (
