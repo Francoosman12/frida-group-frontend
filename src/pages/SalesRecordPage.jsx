@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
+import { UserContext } from '../context/UserContext'; // Asumiendo que tienes un contexto para el usuario
 import '../styles/SalesRecordPage.css';
 
 const SalesRecordPage = () => {
@@ -16,16 +17,18 @@ const SalesRecordPage = () => {
   useEffect(() => {
     const fetchSales = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/sales`, {
-          params: {
-            startDate,
-            endDate,
-          },
-        });
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/sales`);
         const salesData = response.data;
+
+        // Validar si los datos tienen la estructura esperada
         setSales(salesData);
 
-        const total = salesData.reduce((acc, sale) => acc + (sale.price * sale.quantity), 0);
+        const total = salesData.reduce((acc, sale) => {
+          const price = sale.price || 0;
+          const quantity = sale.quantity || 0;
+          return acc + price * quantity;
+        }, 0);
+
         setTotalAmount(total);
 
       } catch (err) {
@@ -35,15 +38,34 @@ const SalesRecordPage = () => {
     };
 
     fetchSales();
-  }, [startDate, endDate]);
+  }, []);
 
-  const handleFilterSubmit = (e) => {
-    e.preventDefault();
+  const handleFilterSubmit = () => {
+    if (!startDate || !endDate) {
+      setError('Por favor selecciona un rango de fechas válido.');
+      return;
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (start > end) {
+      setError('La fecha de inicio no puede ser mayor a la fecha de fin.');
+      return;
+    }
+
+    setError('');
+
+    const filteredSales = sales.filter((sale) => {
+      const saleDate = new Date(sale.date);
+      return saleDate >= start && saleDate <= end;
+    });
+
+    setSales(filteredSales);
   };
 
-  // Agrupando ventas por fecha y EAN
   const groupedSales = sales.reduce((acc, sale) => {
-    const key = `${sale.date}-${sale.ean}`;
+    const key = `${sale.date}-${sale.ean}-${sale.paymentMethod}`;
     if (!acc[key]) {
       acc[key] = { ...sale, quantity: 0, total: 0 };
     }
@@ -54,7 +76,6 @@ const SalesRecordPage = () => {
 
   const groupedSalesArray = Object.values(groupedSales);
 
-  // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = groupedSalesArray.slice(indexOfFirstItem, indexOfLastItem);
@@ -73,7 +94,8 @@ const SalesRecordPage = () => {
       Cantidad: sale.quantity,
       Precio: sale.price.toFixed(2),
       Total: sale.total.toFixed(2),
-      Vendedor: sale.seller || 'N/A'
+      Vendedor: sale.seller || 'N/A',
+      MétodoPago: sale.paymentMethod || 'N/A',
     })));
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Ventas');
@@ -89,7 +111,6 @@ const SalesRecordPage = () => {
     const blob = new Blob([wbout], { type: 'application/octet-stream' });
     saveAs(blob, 'ventas.xlsx');
   };
-
 
   return (
     <div className="sales-record-page">
@@ -113,11 +134,11 @@ const SalesRecordPage = () => {
           />
         </div>
         <div>
-          <button onClick={handleFilterSubmit} className='boton-filtrar'>Filtrar</button>
-          <button onClick={handleDownload} className='boton-descargar'>Descargar Excel</button>
+          <button onClick={handleFilterSubmit} className="boton-filtrar">Filtrar</button>
+          <button onClick={handleDownload} className="boton-descargar">Descargar Excel</button>
         </div>
         <div>
-          <button onClick={exportToExcel} className='boton-exportar'>Descargar como Excel</button>
+          <button onClick={exportToExcel} className="boton-exportar">Descargar como Excel</button>
         </div>
       </div>
 
@@ -131,6 +152,7 @@ const SalesRecordPage = () => {
             <th>EAN</th>
             <th>Descripción</th>
             <th>Cantidad</th>
+            <th>Método de Pago</th>
             <th>Precio</th>
             <th>Total</th>
           </tr>
@@ -144,18 +166,19 @@ const SalesRecordPage = () => {
                 <td>{sale.ean}</td>
                 <td>{sale.product ? sale.product.description : 'N/A'}</td>
                 <td>{sale.quantity}</td>
+                <td>{sale.paymentMethod || 'N/A'}</td>
                 <td>${sale.price.toFixed(2)}</td>
                 <td>${sale.total.toFixed(2)}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="7">No hay ventas registradas.</td>
+              <td colSpan="8">No hay ventas registradas.</td>
             </tr>
           )}
           {currentItems.length > 0 && (
             <tr>
-              <td colSpan="6"><strong>Total</strong></td>
+              <td colSpan="7"><strong>Total</strong></td>
               <td><strong>${totalAmount.toFixed(2)}</strong></td>
             </tr>
           )}

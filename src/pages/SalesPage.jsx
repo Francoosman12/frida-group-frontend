@@ -45,6 +45,7 @@ const SalesPage = () => {
       const cartItem = {
         ...product,
         quantity,
+        paymentMethod: 'efectivo', // Valor predeterminado
       };
 
       setCart((prevCart) => [...prevCart, cartItem]);
@@ -57,6 +58,12 @@ const SalesPage = () => {
     }
   };
 
+  const handleChangePaymentMethod = (index, newMethod) => {
+    const updatedCart = [...cart];
+    updatedCart[index].paymentMethod = newMethod;
+    setCart(updatedCart);
+  };
+
   const handleRegisterSale = async () => {
     if (cart.length > 0) {
       try {
@@ -65,6 +72,7 @@ const SalesPage = () => {
             ean: item.ean,
             quantity: item.quantity,
             price: item.price,
+            paymentMethod: item.paymentMethod, // Método individual por producto
           });
         });
 
@@ -244,6 +252,7 @@ const SalesPage = () => {
             <tr>
               <th>Descripción</th>
               <th>Cantidad</th>
+              <th>Método de Pago</th>
               <th>Precio</th>
               <th>Total</th>
               <th>Acciones</th>
@@ -258,6 +267,16 @@ const SalesPage = () => {
                   {item.quantity}
                   <button onClick={() => handleIncreaseQuantity(index)}>+</button>
                 </td>
+                <td>
+                  <select
+                    value={item.paymentMethod}
+                    onChange={(e) => handleChangePaymentMethod(index, e.target.value)}
+                  >
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Tarjeta">Tarjeta</option>
+                    <option value="Efectivo/Tarjeta">Efectivo/Tarjeta</option>
+                  </select>
+                </td>
                 <td>${item.price.toFixed(2)}</td>
                 <td>${(item.price * item.quantity).toFixed(2)}</td>
                 <td>
@@ -271,7 +290,7 @@ const SalesPage = () => {
               </tr>
             ))}
             <tr>
-              <td colSpan="3">
+              <td colSpan="4">
                 <strong>Total</strong>
               </td>
               <td>
