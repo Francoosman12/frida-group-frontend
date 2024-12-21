@@ -161,7 +161,7 @@ const SalesRecordPage = () => {
           {currentItems.length > 0 ? (
             currentItems.map((sale, index) => (
               <tr key={index}>
-                <td>{sale.seller.name || 'N/A'}</td>
+                <td>{sale.seller || 'N/A'}</td>
                 <td>{new Date(sale.date).toLocaleDateString()}</td>
                 <td>{sale.ean}</td>
                 <td>{sale.product ? sale.product.description : 'N/A'}</td>
