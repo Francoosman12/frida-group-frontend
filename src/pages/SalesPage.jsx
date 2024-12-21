@@ -67,17 +67,34 @@ const SalesPage = () => {
   const handleRegisterSale = async () => {
     if (cart.length > 0) {
       try {
+        // Recuperar el token desde el localStorage
+        const token = localStorage.getItem('token'); // Asegúrate de que el token está allí
+  
+        if (!token) {
+          setError('No estás autenticado. Por favor, inicia sesión.');
+          return;
+        }
+  
         const saleRequests = cart.map((item) => {
-          return axios.post(`${import.meta.env.VITE_API_URL}/api/sales`, {
-            ean: item.ean,
-            quantity: item.quantity,
-            price: item.price,
-            paymentMethod: item.paymentMethod, // Método individual por producto
-          });
+          return axios.post(
+            `${import.meta.env.VITE_API_URL}/api/sales`,
+            {
+              ean: item.ean,
+              quantity: item.quantity,
+              price: item.price,
+              paymentMethod: item.paymentMethod, // Método individual por producto
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, // Incluir el token en las cabeceras
+              },
+            }
+          );
         });
-
+  
         await Promise.all(saleRequests);
-
+  
+        // Limpiar el carrito y otros estados
         setCart([]);
         setProduct(null);
         setEan('');
@@ -90,6 +107,7 @@ const SalesPage = () => {
       }
     }
   };
+  
 
   const toggleQrReader = () => {
     setShowQrReader(!showQrReader);
